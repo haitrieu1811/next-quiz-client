@@ -1,5 +1,6 @@
 import { Fragment, ReactNode } from "react";
 
+import Footer from "@/components/footer";
 import Header from "@/components/header";
 
 const UserLayout = ({ children }: { children: ReactNode }) => {
@@ -7,6 +8,7 @@ const UserLayout = ({ children }: { children: ReactNode }) => {
     <Fragment>
       <Header />
       <main className="container">{children}</main>
+      <Footer />
     </Fragment>
   );
 };
