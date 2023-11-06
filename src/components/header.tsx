@@ -14,8 +14,9 @@ import {
 import PATH from "@/constants/path";
 import AccountDropdown from "./account-dropdown";
 import { ModeToggle } from "./mode-toggle";
+import { Button } from "./ui/button";
 
-const components: { title: string; href: string; description: string }[] = [
+const quizzes: { title: string; href: string; description: string }[] = [
   {
     title: "Địa lý",
     href: PATH.QUIZZES,
@@ -29,12 +30,17 @@ const components: { title: string; href: string; description: string }[] = [
   },
 ];
 
+const isAuthenticated = false;
+
 const Header = () => {
   return (
     <header className="sticky top-0 left-0 right-0 bg-background border-b">
       <nav className="container py-2 flex justify-between items-center">
-        <Link href={PATH.HOME} className="font-bold text-lg flex items-center">
-          NEXT QUIZ
+        <Link
+          href={PATH.HOME}
+          className="font-semibold text-lg flex items-center capitalize"
+        >
+          Next quiz
         </Link>
         <NavigationMenu>
           <NavigationMenuList>
@@ -48,19 +54,19 @@ const Header = () => {
             <NavigationMenuItem>
               <NavigationMenuTrigger>Bài trắc nghiệm</NavigationMenuTrigger>
               <NavigationMenuContent>
-                <ul className="grid w-[400px] gap-2 p-2 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                  {components.map((component) => (
-                    <li key={component.href}>
+                <ul className="grid w-[400px] gap-3 p-3 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                  {quizzes.map((quiz) => (
+                    <li key={quiz.href}>
                       <NavigationMenuLink asChild>
                         <Link
-                          href={component.href}
+                          href={quiz.href}
                           className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                         >
                           <div className="text-sm font-semibold">
-                            {component.title}
+                            {quiz.title}
                           </div>
                           <p className="line-clamp-2 text-sm text-muted-foreground">
-                            {component.description}
+                            {quiz.description}
                           </p>
                         </Link>
                       </NavigationMenuLink>
@@ -79,8 +85,11 @@ const Header = () => {
           </NavigationMenuList>
         </NavigationMenu>
         <div className="flex items-center">
-          <ModeToggle />
-          <AccountDropdown />
+          <div className="mr-5">
+            <ModeToggle />
+          </div>
+          {isAuthenticated && <AccountDropdown />}
+          {!isAuthenticated && <Button variant="secondary">Đăng nhập</Button>}
         </div>
       </nav>
     </header>
