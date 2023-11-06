@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import classNames from "classnames";
 
 import {
   NavigationMenu,
@@ -33,6 +35,7 @@ const quizzes: { title: string; href: string; description: string }[] = [
 const isAuthenticated = false;
 
 const Header = () => {
+  const pathname = usePathname();
   return (
     <header className="sticky top-0 left-0 right-0 bg-background border-b">
       <nav className="container py-2 flex justify-between items-center">
@@ -46,13 +49,23 @@ const Header = () => {
           <NavigationMenuList>
             <NavigationMenuItem>
               <Link href={PATH.HOME} legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                <NavigationMenuLink
+                  className={classNames(navigationMenuTriggerStyle(), {
+                    "text-zinc-500": pathname !== PATH.HOME,
+                  })}
+                >
                   Trang chủ
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <NavigationMenuTrigger>Bài trắc nghiệm</NavigationMenuTrigger>
+              <NavigationMenuTrigger
+                className={classNames({
+                  "text-zinc-500": pathname !== PATH.QUIZZES,
+                })}
+              >
+                Bài trắc nghiệm
+              </NavigationMenuTrigger>
               <NavigationMenuContent>
                 <ul className="grid w-[400px] gap-3 p-3 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
                   {quizzes.map((quiz) => (
@@ -77,7 +90,11 @@ const Header = () => {
             </NavigationMenuItem>
             <NavigationMenuItem>
               <Link href={PATH.RANKING} legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                <NavigationMenuLink
+                  className={classNames(navigationMenuTriggerStyle(), {
+                    "text-zinc-500": pathname !== PATH.RANKING,
+                  })}
+                >
                   Bảng xếp hạng
                 </NavigationMenuLink>
               </Link>
