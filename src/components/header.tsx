@@ -15,6 +15,7 @@ import {
 import PATH from "@/constants/path";
 import { cn } from "@/lib/utils";
 import AccountDropdown from "./account-dropdown";
+import { ModeToggle } from "./mode-toggle";
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -95,7 +96,8 @@ const Header = () => {
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
-        <div>
+        <div className="flex items-center">
+          <ModeToggle />
           <AccountDropdown />
         </div>
       </nav>

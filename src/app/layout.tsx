@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google";
 
 import { cn } from "@/lib/utils";
+import { ThemeProvider } from "@/providers/theme-provider";
 import "./globals.css";
 
 export const fontSans = FontSans({
@@ -23,7 +24,14 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
           fontSans.variable
         )}
       >
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

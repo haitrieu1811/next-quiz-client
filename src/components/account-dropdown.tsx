@@ -11,7 +11,7 @@ import {
 const AccountDropdown = () => {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenuTrigger asChild className="ml-5">
         <Avatar className="w-8 h-8 select-none">
           <AvatarImage src="https://github.com/shadcn.png" sizes="sm" />
           <AvatarFallback className="text-xs">CN</AvatarFallback>
