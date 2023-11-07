@@ -74,3 +74,18 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer base {
+  html *::-webkit-scrollbar {
+    border-radius: 0;
+    width: 6px;
+  }
+  html *::-webkit-scrollbar-thumb {
+    border-radius: 6px;
+    background-color: hsl(var(--border));
+  }
+  html *::-webkit-scrollbar-track {
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+  }
+}
