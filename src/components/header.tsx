@@ -1,8 +1,8 @@
 "use client";
 
+import classNames from "classnames";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import classNames from "classnames";
 
 import {
   NavigationMenu,
@@ -16,7 +16,7 @@ import {
 import PATH from "@/constants/path";
 import AccountDropdown from "./account-dropdown";
 import { ModeToggle } from "./mode-toggle";
-import { Button, buttonVariants } from "./ui/button";
+import { Button } from "./ui/button";
 
 const quizzes: { title: string; href: string; description: string }[] = [
   {
@@ -37,7 +37,7 @@ const isAuthenticated = false;
 const Header = () => {
   const pathname = usePathname();
   return (
-    <header className="sticky top-0 left-0 right-0 bg-background border-b border-b-border">
+    <header className="sticky top-0 left-0 right-0 z-[999] bg-background border-b border-b-border">
       <nav className="container py-2 flex justify-between items-center">
         <Link
           href={PATH.HOME}
@@ -51,7 +51,7 @@ const Header = () => {
               <Link href={PATH.HOME} legacyBehavior passHref>
                 <NavigationMenuLink
                   className={classNames(navigationMenuTriggerStyle(), {
-                    "text-zinc-500": pathname !== PATH.HOME,
+                    "text-zinc-400 dark:text-zinc-500": pathname !== PATH.HOME,
                   })}
                 >
                   Trang chủ
@@ -61,7 +61,7 @@ const Header = () => {
             <NavigationMenuItem>
               <NavigationMenuTrigger
                 className={classNames({
-                  "text-zinc-500": pathname !== PATH.QUIZZES,
+                  "text-zinc-400 dark:text-zinc-500": pathname !== PATH.QUIZZES,
                 })}
               >
                 Bài trắc nghiệm
@@ -92,10 +92,23 @@ const Header = () => {
               <Link href={PATH.RANKING} legacyBehavior passHref>
                 <NavigationMenuLink
                   className={classNames(navigationMenuTriggerStyle(), {
-                    "text-zinc-500": pathname !== PATH.RANKING,
+                    "text-zinc-400 dark:text-zinc-500":
+                      pathname !== PATH.RANKING,
                   })}
                 >
                   Bảng xếp hạng
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <Link href={PATH.CONTRIBUTE} legacyBehavior passHref>
+                <NavigationMenuLink
+                  className={classNames(navigationMenuTriggerStyle(), {
+                    "text-zinc-400 dark:text-zinc-500":
+                      pathname !== PATH.CONTRIBUTE,
+                  })}
+                >
+                  Đóng góp
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>

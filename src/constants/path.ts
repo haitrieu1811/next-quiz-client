@@ -5,6 +5,7 @@ const PATH = {
   PROFILE: "/profile",
   QUIZZES: "/quizzes",
   RANKING: "/ranking",
+  CONTRIBUTE: "/contribute",
 } as const;
 
 export default PATH;
