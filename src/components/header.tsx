@@ -16,7 +16,7 @@ import {
 import PATH from "@/constants/path";
 import AccountDropdown from "./account-dropdown";
 import { ModeToggle } from "./mode-toggle";
-import { Button } from "./ui/button";
+import { Button, buttonVariants } from "./ui/button";
 
 const quizzes: { title: string; href: string; description: string }[] = [
   {
@@ -37,7 +37,7 @@ const isAuthenticated = false;
 const Header = () => {
   const pathname = usePathname();
   return (
-    <header className="sticky top-0 left-0 right-0 bg-background border-b">
+    <header className="sticky top-0 left-0 right-0 bg-background border-b border-b-border">
       <nav className="container py-2 flex justify-between items-center">
         <Link
           href={PATH.HOME}
@@ -106,7 +106,11 @@ const Header = () => {
             <ModeToggle />
           </div>
           {isAuthenticated && <AccountDropdown />}
-          {!isAuthenticated && <Button variant="secondary">Đăng nhập</Button>}
+          {!isAuthenticated && (
+            <Button variant="secondary" className="rounded-full h-8" asChild>
+              <Link href={PATH.LOGIN}>Đăng nhập</Link>
+            </Button>
+          )}
         </div>
       </nav>
     </header>

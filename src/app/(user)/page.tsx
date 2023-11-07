@@ -1,3 +1,5 @@
+"use client";
+
 import Quiz from "@/components/quiz";
 
 const Home = () => {

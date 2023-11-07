@@ -17,10 +17,9 @@ export const metadata: Metadata = {
 
 interface Props {
   children: React.ReactNode;
-  modal: React.ReactNode;
 }
 
-const RootLayout = ({ children, modal }: Props) => {
+const RootLayout = ({ children }: Props) => {
   return (
     <html lang="en">
       <body
@@ -35,7 +34,6 @@ const RootLayout = ({ children, modal }: Props) => {
           enableSystem
           disableTransitionOnChange
         >
-          {modal}
           {children}
         </ThemeProvider>
       </body>

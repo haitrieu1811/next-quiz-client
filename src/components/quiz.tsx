@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "./ui/button";
+import { Badge } from "./ui/badge";
 
 interface QuizProps {
   className?: string;
@@ -24,7 +25,7 @@ const Quiz = ({ className }: QuizProps) => {
         <CardDescription>Card Description</CardDescription>
       </CardHeader>
       <CardContent>
-        <p>Card Content</p>
+        <Badge className="bg-red-500 dark:bg-red-700 text-white">Hard</Badge>
       </CardContent>
       <CardFooter className="flex justify-end">
         <Button variant="secondary">Bắt đầu</Button>
