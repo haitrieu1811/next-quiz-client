@@ -1,10 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { Github, Loader2 } from "lucide-react";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
+import isEmpty from "lodash/isEmpty";
 
+import userApis from "@/apis/user.apis";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -16,12 +18,19 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { LoginSchema, loginSchema } from "@/lib/rules";
+import { isEntityError } from "@/lib/utils";
+import { ErrorResponse } from "@/types/utils.types";
+import { useContext } from "react";
+import { AppContext } from "@/providers/app-provider";
+import { useToast } from "@/components/ui/use-toast";
 
 type FormSchema = LoginSchema;
 
 const LoginForm = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { setIsAuthenticated, setUser } = useContext(AppContext);
+  const { toast } = useToast();
 
+  // Form
   const form = useForm<FormSchema>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -30,16 +39,45 @@ const LoginForm = () => {
     },
   });
 
-  const { handleSubmit, control } = form;
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+    setError,
+  } = form;
 
-  const onSubmit = handleSubmit(
-    (data) => {
-      console.log(">>> data", data);
+  // Mutation: Đăng nhập
+  const loginMutation = useMutation({
+    mutationFn: userApis.login,
+    onSuccess: (data) => {
+      const { user } = data.data.data;
+      setIsAuthenticated(true);
+      setUser(user);
+      toast({
+        title: "Đăng nhập thành công",
+        description: "Chào mừng bạn đến với Next Quiz",
+      });
     },
-    (error) => {
-      console.log(">>> error", error);
-    }
-  );
+    onError: (error) => {
+      if (isEntityError<ErrorResponse<FormSchema>>(error)) {
+        const formErrors = error.response?.data.data;
+        console.log(">>> formErrors", formErrors);
+        if (!isEmpty(formErrors)) {
+          Object.keys(formErrors).forEach((key) => {
+            setError(key as keyof FormSchema, {
+              type: "Server",
+              message: formErrors[key as keyof FormSchema],
+            });
+          });
+        }
+      }
+    },
+  });
+
+  // Submit form
+  const onSubmit = handleSubmit((data) => {
+    loginMutation.mutate(data);
+  });
 
   return (
     <div className="grid gap-6">
@@ -60,7 +98,7 @@ const LoginForm = () => {
                       autoCapitalize="none"
                       autoComplete="email"
                       autoCorrect="off"
-                      disabled={isLoading}
+                      disabled={loginMutation.isPending}
                       {...field}
                     />
                   </FormControl>
@@ -81,7 +119,7 @@ const LoginForm = () => {
                       autoCapitalize="none"
                       autoComplete="email"
                       autoCorrect="off"
-                      disabled={isLoading}
+                      disabled={loginMutation.isPending}
                       {...field}
                     />
                   </FormControl>
@@ -89,8 +127,10 @@ const LoginForm = () => {
                 </FormItem>
               )}
             />
-            <Button disabled={isLoading}>
-              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            <Button disabled={loginMutation.isPending}>
+              {loginMutation.isPending && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
               Đăng nhập với Email
             </Button>
           </div>
@@ -107,8 +147,12 @@ const LoginForm = () => {
           </span>
         </div>
       </div>
-      <Button variant="outline" type="button" disabled={isLoading}>
-        {isLoading ? (
+      <Button
+        variant="outline"
+        type="button"
+        disabled={loginMutation.isPending}
+      >
+        {loginMutation.isPending ? (
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
         ) : (
           <Github className="mr-2 h-4 w-4" />

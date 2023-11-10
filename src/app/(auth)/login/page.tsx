@@ -1,4 +1,8 @@
+"use client";
+
 import Link from "next/link";
+
+import rejectedRoute from "@/hoc/rejected-route";
 import LoginForm from "../_components/login-form";
 
 const Login = () => {
@@ -25,4 +29,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default rejectedRoute(Login);

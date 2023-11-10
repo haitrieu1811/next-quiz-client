@@ -1,5 +1,5 @@
+import { getRefreshTokenFromLS } from "@/lib/auth";
 import http from "@/lib/http";
-import { getRefreshTokenFromLS } from "@/lib/localStorage";
 import { AuthResponse } from "@/types/auth.types";
 import {
   ChangePasswordReqBody,
@@ -8,6 +8,7 @@ import {
   RegisterReqBody,
   UpdateMeReqBody,
 } from "../types/user.types";
+import { OnlyMessageResponse } from "@/types/utils.types";
 
 export const URL_LOGIN = "/users/login";
 export const URL_REGISTER = "/users/register";
@@ -31,8 +32,7 @@ const userApis = {
   // Đăng xuất
   logout() {
     const refresh_token = getRefreshTokenFromLS();
-    if (!refresh_token) return;
-    return http.post(URL_LOGOUT, { refresh_token });
+    return http.post<OnlyMessageResponse>(URL_LOGOUT, { refresh_token });
   },
 
   // Lấy thông tin người dùng hiện tại

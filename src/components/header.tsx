@@ -3,6 +3,7 @@
 import classNames from "classnames";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useContext } from "react";
 
 import {
   NavigationMenu,
@@ -14,6 +15,7 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import PATH from "@/constants/path";
+import { AppContext } from "@/providers/app-provider";
 import AccountDropdown from "./account-dropdown";
 import { ModeToggle } from "./mode-toggle";
 import { Button } from "./ui/button";
@@ -32,12 +34,12 @@ const quizzes: { title: string; href: string; description: string }[] = [
   },
 ];
 
-const isAuthenticated = false;
-
 const Header = () => {
   const pathname = usePathname();
+  const { isAuthenticated } = useContext(AppContext);
+
   return (
-    <header className="sticky top-0 left-0 right-0 z-[999] bg-background border-b border-b-border">
+    <header className="sticky top-0 left-0 right-0 z-10 bg-background border-b border-b-border">
       <nav className="container py-2 flex justify-between items-center">
         <Link
           href={PATH.HOME}

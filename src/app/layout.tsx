@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google";
 
+import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
+import AppProvider from "@/providers/app-provider";
 import TanstackProvider from "@/providers/tanstack-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
 import "./globals.css";
@@ -36,7 +38,8 @@ const RootLayout = ({ children }: Props) => {
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <AppProvider>{children}</AppProvider>
+            <Toaster />
           </ThemeProvider>
         </TanstackProvider>
       </body>
