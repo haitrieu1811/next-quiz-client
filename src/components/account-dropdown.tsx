@@ -1,5 +1,9 @@
-import { History, Key, LogOut, User } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import { LogOut } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useContext } from "react";
 
+import userApis from "@/apis/user.apis";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -9,14 +13,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useMutation } from "@tanstack/react-query";
-import userApis from "@/apis/user.apis";
-import { useContext } from "react";
+import PATH from "@/constants/path";
 import { AppContext } from "@/providers/app-provider";
 import { useToast } from "./ui/use-toast";
 
 const AccountDropdown = () => {
-  const { setIsAuthenticated, setUser } = useContext(AppContext);
+  const router = useRouter();
+  const { setIsAuthenticated, setUser, user } = useContext(AppContext);
   const { toast } = useToast();
 
   // Mutation: Đăng xuất
@@ -46,16 +49,19 @@ const AccountDropdown = () => {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" sideOffset={10} className="w-48">
-        <DropdownMenuLabel>Tài khoản của tôi</DropdownMenuLabel>
+        <DropdownMenuLabel>{user?.username}</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="cursor-pointer">
-          <User width={15} className="mr-3" /> Thông tin tài khoản
+        <DropdownMenuItem
+          onClick={() => router.push(PATH.SETTING)}
+          className="cursor-pointer"
+        >
+          Cài đặt
         </DropdownMenuItem>
         <DropdownMenuItem className="cursor-pointer">
-          <Key width={15} className="mr-3" /> Đổi mật khẩu
+          Đổi mật khẩu
         </DropdownMenuItem>
         <DropdownMenuItem className="cursor-pointer">
-          <History width={15} className="mr-3" /> Lịch sử trả lời
+          Lịch sử trả lời
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={logout} className="cursor-pointer">

@@ -6,6 +6,7 @@ export type UserType = {
   _id: string;
   email: string;
   fullname: string;
+  username: string;
   avatar: string | null;
   cover: string | null;
   bio: string;

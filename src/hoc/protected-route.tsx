@@ -6,15 +6,15 @@ import { useContext, useLayoutEffect } from "react";
 import PATH from "@/constants/path";
 import { AppContext } from "@/providers/app-provider";
 
-export default function rejectedRoute(Component: any) {
-  return function RejectedRoute(props: any) {
+export default function protectedRoute(Component: any) {
+  return function ProtectedRoute(props: any) {
     const { isAuthenticated } = useContext(AppContext);
 
     useLayoutEffect(() => {
-      if (isAuthenticated) return redirect(PATH.HOME);
+      if (!isAuthenticated) return redirect(PATH.LOGIN);
     }, [isAuthenticated]);
 
-    if (isAuthenticated) {
+    if (!isAuthenticated) {
       return null;
     }
 
