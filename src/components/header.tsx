@@ -51,7 +51,7 @@ const Header = () => {
               <Link href={PATH.HOME} legacyBehavior passHref>
                 <NavigationMenuLink
                   className={classNames(navigationMenuTriggerStyle(), {
-                    "text-zinc-400 dark:text-zinc-500": pathname !== PATH.HOME,
+                    "text-zinc-500 dark:text-zinc-400": pathname !== PATH.HOME,
                   })}
                 >
                   Trang chủ
@@ -61,7 +61,7 @@ const Header = () => {
             <NavigationMenuItem>
               <NavigationMenuTrigger
                 className={classNames({
-                  "text-zinc-400 dark:text-zinc-500": pathname !== PATH.QUIZZES,
+                  "text-zinc-500 dark:text-zinc-400": pathname !== PATH.QUIZZES,
                 })}
               >
                 Bài trắc nghiệm
@@ -92,7 +92,7 @@ const Header = () => {
               <Link href={PATH.RANKING} legacyBehavior passHref>
                 <NavigationMenuLink
                   className={classNames(navigationMenuTriggerStyle(), {
-                    "text-zinc-400 dark:text-zinc-500":
+                    "text-zinc-500 dark:text-zinc-400":
                       pathname !== PATH.RANKING,
                   })}
                 >
@@ -104,7 +104,7 @@ const Header = () => {
               <Link href={PATH.CONTRIBUTE} legacyBehavior passHref>
                 <NavigationMenuLink
                   className={classNames(navigationMenuTriggerStyle(), {
-                    "text-zinc-400 dark:text-zinc-500":
+                    "text-zinc-500 dark:text-zinc-400":
                       pathname !== PATH.CONTRIBUTE,
                   })}
                 >
