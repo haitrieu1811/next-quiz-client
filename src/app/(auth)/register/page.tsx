@@ -1,3 +1,6 @@
+"use client";
+
+import rejectedRoute from "@/hoc/rejected-route";
 import RegisterForm from "../_components/register-form";
 
 const Register = () => {
@@ -14,4 +17,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default rejectedRoute(Register);

@@ -1,6 +1,6 @@
 import axios, { type AxiosInstance } from "axios";
 
-import { URL_LOGIN, URL_LOGOUT } from "@/apis/user.apis";
+import { URL_LOGIN, URL_LOGOUT, URL_REGISTER } from "@/apis/user.apis";
 import { AuthResponse } from "@/types/auth.types";
 import { UserType } from "@/types/user.types";
 import {
@@ -51,7 +51,7 @@ class Http {
         // Any status code that lie within the range of 2xx cause this function to trigger
         // Do something with response data
         const { url } = response.config;
-        if (url && url === URL_LOGIN) {
+        if ((url && url === URL_LOGIN) || url === URL_REGISTER) {
           const { access_token, refresh_token, user } = (
             response.data as AuthResponse
           ).data;

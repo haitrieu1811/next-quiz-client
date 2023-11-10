@@ -26,7 +26,7 @@ const userApis = {
 
   // Đăng ký
   register(body: RegisterReqBody) {
-    return http.post(URL_REGISTER, body);
+    return http.post<AuthResponse>(URL_REGISTER, body);
   },
 
   // Đăng xuất

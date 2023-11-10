@@ -61,7 +61,6 @@ const LoginForm = () => {
     onError: (error) => {
       if (isEntityError<ErrorResponse<FormSchema>>(error)) {
         const formErrors = error.response?.data.data;
-        console.log(">>> formErrors", formErrors);
         if (!isEmpty(formErrors)) {
           Object.keys(formErrors).forEach((key) => {
             setError(key as keyof FormSchema, {

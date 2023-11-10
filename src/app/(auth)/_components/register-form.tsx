@@ -1,76 +1,160 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import isEmpty from "lodash/isEmpty";
 import { Github, Loader2 } from "lucide-react";
-import * as React from "react";
+import { useContext } from "react";
+import { useForm } from "react-hook-form";
 
+import userApis from "@/apis/user.apis";
 import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useToast } from "@/components/ui/use-toast";
+import { RegisterSchema, registerSchema } from "@/lib/rules";
+import { isEntityError } from "@/lib/utils";
+import { AppContext } from "@/providers/app-provider";
+import { ErrorResponse } from "@/types/utils.types";
+
+type FormSchema = RegisterSchema;
 
 const RegisterForm = () => {
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const { setIsAuthenticated, setUser } = useContext(AppContext);
+  const { toast } = useToast();
 
-  async function onSubmit(event: React.SyntheticEvent) {
-    event.preventDefault();
-    setIsLoading(true);
+  // Form
+  const form = useForm<FormSchema>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+      confirm_password: "",
+    },
+  });
 
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
-  }
+  const { control, handleSubmit, setError } = form;
+
+  // Mutation: Đăng ký
+  const registerMutation = useMutation({
+    mutationKey: ["register"],
+    mutationFn: userApis.register,
+    onSuccess: (data) => {
+      const { user } = data.data.data;
+      setUser(user);
+      setIsAuthenticated(true);
+      toast({
+        title: "Đăng ký thành công",
+        description: "Chào mừng bạn đến với Next Quiz.",
+      });
+    },
+    onError: (error) => {
+      if (isEntityError<ErrorResponse<FormSchema>>(error)) {
+        const formErrors = error.response?.data.data;
+        if (!isEmpty(formErrors)) {
+          Object.keys(formErrors).forEach((key) => {
+            setError(key as keyof FormSchema, {
+              type: "Server",
+              message: formErrors[key as keyof FormSchema],
+            });
+          });
+        }
+      }
+    },
+  });
+
+  // Submit form
+  const onSubmit = handleSubmit((data) => {
+    registerMutation.mutate(data);
+  });
 
   return (
     <div className="grid gap-6">
-      <form onSubmit={onSubmit}>
-        <div className="grid gap-2">
-          <div className="grid gap-1">
-            <Label className="sr-only" htmlFor="email">
-              Email
-            </Label>
-            <Input
-              id="email"
-              placeholder="Email của bạn"
-              type="email"
-              autoCapitalize="none"
-              autoComplete="email"
-              autoCorrect="off"
-              disabled={isLoading}
+      <Form {...form}>
+        <form onSubmit={onSubmit}>
+          <div className="grid gap-4">
+            <FormField
+              control={control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="sr-only">Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      id="email"
+                      placeholder="Email của bạn"
+                      type="email"
+                      autoCapitalize="none"
+                      autoComplete="email"
+                      autoCorrect="off"
+                      disabled={registerMutation.isPending}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-          <div className="grid gap-1">
-            <Label className="sr-only" htmlFor="password">
-              Mật khẩu
-            </Label>
-            <Input
-              id="password"
-              placeholder="Mật khẩu của bạn"
-              type="password"
-              autoCapitalize="none"
-              autoComplete="email"
-              autoCorrect="off"
-              disabled={isLoading}
+            <FormField
+              control={control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="sr-only">Mật khẩu</FormLabel>
+                  <FormControl>
+                    <Input
+                      id="password"
+                      placeholder="Mật khẩu của bạn"
+                      type="password"
+                      autoCapitalize="none"
+                      autoComplete="email"
+                      autoCorrect="off"
+                      disabled={registerMutation.isPending}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-          <div className="grid gap-1">
-            <Label className="sr-only" htmlFor="password_confirm">
-              Nhập lại mật khẩu
-            </Label>
-            <Input
-              id="password_confirm"
-              placeholder="Nhập lại mật khẩu của bạn"
-              type="password"
-              autoCapitalize="none"
-              autoComplete="email"
-              autoCorrect="off"
-              disabled={isLoading}
+            <FormField
+              control={control}
+              name="confirm_password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="sr-only">Nhập lại mật khẩu</FormLabel>
+                  <FormControl>
+                    <Input
+                      id="password_confirm"
+                      placeholder="Nhập lại mật khẩu của bạn"
+                      type="password"
+                      autoCapitalize="none"
+                      autoComplete="email"
+                      autoCorrect="off"
+                      disabled={registerMutation.isPending}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
+            <Button disabled={registerMutation.isPending}>
+              {registerMutation.isPending && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
+              Tạo tài khoản với Email
+            </Button>
           </div>
-          <Button disabled={isLoading}>
-            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Tạo tài khoản với Email
-          </Button>
-        </div>
-      </form>
+        </form>
+      </Form>
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t" />
@@ -81,8 +165,12 @@ const RegisterForm = () => {
           </span>
         </div>
       </div>
-      <Button variant="outline" type="button" disabled={isLoading}>
-        {isLoading ? (
+      <Button
+        variant="outline"
+        type="button"
+        disabled={registerMutation.isPending}
+      >
+        {registerMutation.isPending ? (
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
         ) : (
           <Github className="mr-2 h-4 w-4" />
