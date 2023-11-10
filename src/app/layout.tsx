@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google";
 
 import { cn } from "@/lib/utils";
+import TanstackProvider from "@/providers/tanstack-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
 import "./globals.css";
 
@@ -28,14 +29,16 @@ const RootLayout = ({ children }: Props) => {
           fontSans.variable
         )}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
+        <TanstackProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </TanstackProvider>
       </body>
     </html>
   );
