@@ -40,7 +40,7 @@ export type UpdateMeReqBody = {
   bio?: string;
   gender?: UserGender;
   phone_number?: string;
-  date_of_birth?: string;
+  date_of_birth?: Date;
 };
 
 // Request: Đổi mật khẩu

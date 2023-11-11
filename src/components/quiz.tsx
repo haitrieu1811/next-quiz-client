@@ -57,25 +57,13 @@ const Quiz = ({ className }: QuizProps) => {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <Button
-                  variant="secondary"
-                  size="icon"
-                  className="w-8 h-8 mr-2 rounded-full"
-                >
-                  <Fullscreen strokeWidth={1.5} width={15} />
-                </Button>
+                <Fullscreen strokeWidth={1.5} width={15} />
               </TooltipTrigger>
               <TooltipContent>Xem trước</TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger>
-                <Button
-                  variant="secondary"
-                  size="icon"
-                  className="w-8 h-8 rounded-full"
-                >
-                  <Play strokeWidth={1.5} width={15} />
-                </Button>
+                <Play strokeWidth={1.5} width={15} />
               </TooltipTrigger>
               <TooltipContent>Bắt đầu</TooltipContent>
             </Tooltip>

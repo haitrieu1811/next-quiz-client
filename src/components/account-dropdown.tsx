@@ -36,14 +36,15 @@ const AccountDropdown = () => {
     },
   });
 
+  // Handle: Đăng xuất
   const logout = () => {
     logoutMutation.mutate();
   };
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild className="cursor-pointer">
-        <Avatar className="w-8 h-8 select-none">
+      <DropdownMenuTrigger asChild>
+        <Avatar className="w-8 h-8 select-none cursor-pointer">
           <AvatarImage src="https://github.com/shadcn.png" sizes="sm" />
           <AvatarFallback className="text-xs">CN</AvatarFallback>
         </Avatar>

@@ -1,12 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Loader2 } from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
 
 import userApis from "@/apis/user.apis";
 import { Button } from "@/components/ui/button";
@@ -27,57 +26,29 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
-import { toast } from "@/components/ui/use-toast";
-import { cn } from "@/lib/utils";
+import { useToast } from "@/components/ui/use-toast";
+import { UpdateMeSchema, updateMeSchema } from "@/lib/rules";
+import { cn, isEntityError } from "@/lib/utils";
+import { ErrorResponse } from "@/types/utils.types";
+import { isEmpty } from "lodash";
 
-const profileFormSchema = z.object({
-  username: z
-    .string()
-    .min(2, {
-      message: "Username must be at least 2 characters.",
-    })
-    .max(30, {
-      message: "Username must not be longer than 30 characters.",
-    }),
-  email: z
-    .string({
-      required_error: "Please select an email to display.",
-    })
-    .email(),
-  bio: z.string().max(160).min(4),
-  urls: z
-    .array(
-      z.object({
-        value: z.string().url({ message: "Please enter a valid URL." }),
-      })
-    )
-    .optional(),
-  name: z
-    .string()
-    .min(2, {
-      message: "Name must be at least 2 characters.",
-    })
-    .max(30, {
-      message: "Name must not be longer than 30 characters.",
-    }),
-  dob: z.date({
-    required_error: "A date of birth is required.",
-  }),
-});
-
-type ProfileFormValues = z.infer<typeof profileFormSchema>;
-
-// This can come from your database or API.
-const defaultValues: Partial<ProfileFormValues> = {
-  bio: "I own a computer.",
-};
+type FormSchema = UpdateMeSchema;
 
 const ProfileForm = () => {
-  const form = useForm<ProfileFormValues>({
-    resolver: zodResolver(profileFormSchema),
-    defaultValues,
-    mode: "onChange",
+  // Form
+  const form = useForm<FormSchema>({
+    resolver: zodResolver(updateMeSchema),
+    defaultValues: {
+      username: "",
+      fullname: "",
+      bio: "",
+      phone_number: "",
+      date_of_birth: new Date(),
+    },
   });
+
+  const { handleSubmit, control, setValue, setError } = form;
+  const { toast } = useToast();
 
   // Query: Lấy thông tin tài khoản đăng nhập
   const getMeQuery = useQuery({
@@ -91,41 +62,70 @@ const ProfileForm = () => {
     [getMeQuery.data?.data.data.user]
   );
 
-  function onSubmit(data: ProfileFormValues) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
+  // Mutation: Cập nhật thông tin tài khoản
+  const updateMeMutation = useMutation({
+    mutationKey: ["update-me"],
+    mutationFn: userApis.updateMe,
+    onSuccess: () => {
+      getMeQuery.refetch();
+      toast({
+        title: "Cập nhật thông tin thành công",
+        description: "Thông tin sẽ được hiển thị trên hồ sơ của bạn.",
+      });
+    },
+    onError: (error) => {
+      if (isEntityError<ErrorResponse<FormSchema>>(error)) {
+        const formErrors = error.response?.data.data;
+        if (!isEmpty(formErrors)) {
+          Object.keys(formErrors).forEach((key) => {
+            setError(key as keyof FormSchema, {
+              type: "Server",
+              message: formErrors[key as keyof FormSchema]?.toString(),
+            });
+          });
+        }
+      }
+    },
+  });
+
+  // Submit form
+  const onSubmit = handleSubmit((data) => {
+    if (!me) return;
+    Object.keys(data).forEach((key) => {
+      const _key = key as keyof FormSchema;
+      if (data[_key] === me[_key]) {
+        delete data[_key];
+      }
     });
-  }
+    updateMeMutation.mutate(data);
+  });
 
   // Set giá trị mặc định cho form
   useEffect(() => {
     if (!me) return;
-    form.setValue("username", me.username);
-    form.setValue("name", me.fullname);
-    form.setValue("bio", me.bio);
-    form.setValue("dob", new Date(me.date_of_birth));
-  }, [me, form]);
-
-  if (!me) {
-    return null;
-  }
+    setValue("username", me.username);
+    setValue("fullname", me.fullname);
+    setValue("bio", me.bio);
+    setValue("phone_number", me.phone_number);
+    setValue("date_of_birth", new Date(me.date_of_birth));
+  }, [me, setValue]);
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={onSubmit} className="space-y-8">
+        {/* Username */}
         <FormField
-          control={form.control}
+          control={control}
           name="username"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Tên tài khoản</FormLabel>
               <FormControl>
-                <Input placeholder="shadcn" {...field} />
+                <Input
+                  placeholder="shadcn"
+                  disabled={updateMeMutation.isPending}
+                  {...field}
+                />
               </FormControl>
               <FormDescription>
                 Đây là tên hiển thị công khai của bạn. Nó có thể là tên thật
@@ -135,14 +135,19 @@ const ProfileForm = () => {
             </FormItem>
           )}
         />
+        {/* Fullname */}
         <FormField
-          control={form.control}
-          name="name"
+          control={control}
+          name="fullname"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Họ và tên</FormLabel>
               <FormControl>
-                <Input placeholder="Họ và tên" {...field} />
+                <Input
+                  placeholder="Họ và tên"
+                  disabled={updateMeMutation.isPending}
+                  {...field}
+                />
               </FormControl>
               <FormDescription>
                 Đây là tên sẽ được hiển thị trên hồ sơ của bạn và trong email..
@@ -151,6 +156,7 @@ const ProfileForm = () => {
             </FormItem>
           )}
         />
+        {/* Email */}
         <FormItem>
           <FormLabel>Email</FormLabel>
           <Input type="email" value="haitrieu2524@gmail.com" disabled />
@@ -159,8 +165,30 @@ const ProfileForm = () => {
           </FormDescription>
           <FormMessage />
         </FormItem>
+        {/* Phone number */}
         <FormField
-          control={form.control}
+          control={control}
+          name="phone_number"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Số điện thoại</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Số điện thoại"
+                  disabled={updateMeMutation.isPending}
+                  {...field}
+                />
+              </FormControl>
+              <FormDescription>
+                Đây là số điện thoại mà chúng tôi sẽ liên lạc với bạn nếu cần.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        {/* Bio */}
+        <FormField
+          control={control}
           name="bio"
           render={({ field }) => (
             <FormItem>
@@ -169,6 +197,7 @@ const ProfileForm = () => {
                 <Textarea
                   placeholder="Hãy kể cho chúng tôi một chút về bản thân bạn"
                   className="resize-none"
+                  disabled={updateMeMutation.isPending}
                   {...field}
                 />
               </FormControl>
@@ -180,9 +209,10 @@ const ProfileForm = () => {
             </FormItem>
           )}
         />
+        {/* Date of birth */}
         <FormField
-          control={form.control}
-          name="dob"
+          control={control}
+          name="date_of_birth"
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>Sinh nhật</FormLabel>
@@ -199,7 +229,7 @@ const ProfileForm = () => {
                       {field.value ? (
                         format(field.value, "PPP")
                       ) : (
-                        <span>Pick a date</span>
+                        <span>Chọn ngày sinh</span>
                       )}
                       <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                     </Button>
@@ -224,7 +254,13 @@ const ProfileForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit">Cập nhật hồ sơ</Button>
+        {/* Submit */}
+        <Button type="submit">
+          {updateMeMutation.isPending && (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          )}
+          Cập nhật hồ sơ
+        </Button>
       </form>
     </Form>
   );

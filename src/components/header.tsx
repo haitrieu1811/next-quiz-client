@@ -18,7 +18,7 @@ import PATH from "@/constants/path";
 import { AppContext } from "@/providers/app-provider";
 import AccountDropdown from "./account-dropdown";
 import { ModeToggle } from "./mode-toggle";
-import { Button } from "./ui/button";
+import { buttonVariants } from "./ui/button";
 
 const quizzes: { title: string; href: string; description: string }[] = [
   {
@@ -150,9 +150,12 @@ const Header = () => {
           </div>
           {isAuthenticated && <AccountDropdown />}
           {!isAuthenticated && (
-            <Button variant="secondary" className="rounded-full h-8" asChild>
-              <Link href={PATH.LOGIN}>Đăng nhập</Link>
-            </Button>
+            <Link
+              href={PATH.LOGIN}
+              className={buttonVariants({ variant: "secondary" })}
+            >
+              Đăng nhập
+            </Link>
           )}
         </div>
       </nav>

@@ -42,7 +42,7 @@ const userApis = {
 
   // Cập nhật thông tin người dùng hiện tại
   updateMe(body: UpdateMeReqBody) {
-    return http.patch(URL_UPDATE_ME, body);
+    return http.patch<AuthResponse>(URL_UPDATE_ME, body);
   },
 
   // Đổi mật khẩu
