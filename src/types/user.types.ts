@@ -7,12 +7,12 @@ export type UserType = {
   email: string;
   fullname: string;
   username: string;
-  avatar: string | null;
-  cover: string | null;
+  avatar_url: string | null;
+  cover_url: string | null;
   bio: string;
   gender: UserGender;
-  date_of_birth: string;
   phone_number: string;
+  date_of_birth: string;
   status: UserStatus;
   role: UserRole;
   created_at: string;

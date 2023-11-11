@@ -19,6 +19,10 @@ const sidebarNavItems = [
     href: PATH.SETTING,
   },
   {
+    title: "Hình ảnh",
+    href: PATH.SETTING_PHOTO,
+  },
+  {
     title: "Đổi mật khẩu",
     href: PATH.SETTING_CHANGE_PASSWORD,
   },

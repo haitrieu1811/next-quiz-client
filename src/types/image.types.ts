@@ -10,5 +10,5 @@ export type ImageType = {
 
 // Response: Tải ảnh lên thành công
 export type UploadImagesResponse = SuccessResponse<{
-  image: ImageType[];
+  images: ImageType[];
 }>;

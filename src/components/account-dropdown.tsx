@@ -45,8 +45,14 @@ const AccountDropdown = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Avatar className="w-8 h-8 select-none cursor-pointer">
-          <AvatarImage src="https://github.com/shadcn.png" sizes="sm" />
-          <AvatarFallback className="text-xs">CN</AvatarFallback>
+          <AvatarImage
+            src={user?.avatar_url || undefined}
+            sizes="sm"
+            className="object-cover"
+          />
+          <AvatarFallback className="text-xs">
+            {user?.username[0].toUpperCase()}
+          </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" sideOffset={10} className="w-48">
