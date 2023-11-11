@@ -19,12 +19,8 @@ const sidebarNavItems = [
     href: PATH.SETTING,
   },
   {
-    title: "Giao diện",
-    href: PATH.SETTING_APPEARANCE,
-  },
-  {
-    title: "Thông báo",
-    href: PATH.SETTING_NOTIFICATIONS,
+    title: "Đổi mật khẩu",
+    href: PATH.SETTING_CHANGE_PASSWORD,
   },
 ];
 

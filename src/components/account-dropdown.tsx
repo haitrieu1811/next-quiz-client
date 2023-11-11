@@ -58,7 +58,10 @@ const AccountDropdown = () => {
         >
           Cài đặt
         </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer">
+        <DropdownMenuItem
+          onClick={() => router.push(PATH.SETTING_CHANGE_PASSWORD)}
+          className="cursor-pointer"
+        >
           Đổi mật khẩu
         </DropdownMenuItem>
         <DropdownMenuItem className="cursor-pointer">

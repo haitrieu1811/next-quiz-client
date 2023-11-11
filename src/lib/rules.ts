@@ -98,6 +98,40 @@ export const updateMeSchema = userSchema.pick({
   date_of_birth: true,
 });
 
+// Đổi mật khẩu
+export const changePasswordSchema = z
+  .object({
+    old_password: z
+      .string()
+      .min(8, {
+        message: USERS_MESSAGES.PASSWORD_IS_WEAK,
+      })
+      .max(32, {
+        message: USERS_MESSAGES.PASSWORD_IS_WEAK,
+      }),
+    password: z
+      .string()
+      .min(8, {
+        message: USERS_MESSAGES.PASSWORD_IS_WEAK,
+      })
+      .max(32, {
+        message: USERS_MESSAGES.PASSWORD_IS_WEAK,
+      }),
+    confirm_password: z
+      .string()
+      .min(8, {
+        message: USERS_MESSAGES.PASSWORD_IS_WEAK,
+      })
+      .max(32, {
+        message: USERS_MESSAGES.PASSWORD_IS_WEAK,
+      }),
+  })
+  .refine((data) => data.password === data.confirm_password, {
+    message: USERS_MESSAGES.CONFIRM_PASSWORD_DOES_NOT_MATCH,
+    path: ["confirm_password"],
+  });
+
 export type LoginSchema = z.infer<typeof loginSchema>;
 export type RegisterSchema = z.infer<typeof registerSchema>;
 export type UpdateMeSchema = z.infer<typeof updateMeSchema>;
+export type ChangePasswordSchema = z.infer<typeof changePasswordSchema>;
