@@ -2,14 +2,14 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { format } from "date-fns";
-import { CalendarIcon, Loader2 } from "lucide-react";
-import { useEffect, useMemo } from "react";
+import { isEmpty } from "lodash";
+import { Loader2 } from "lucide-react";
+import { useContext, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 
 import userApis from "@/apis/user.apis";
+import DateSelect from "@/components/date-select";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import {
   Form,
   FormControl,
@@ -20,17 +20,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { UpdateMeSchema, updateMeSchema } from "@/lib/rules";
-import { cn, isEntityError } from "@/lib/utils";
+import { isEntityError } from "@/lib/utils";
+import { AppContext } from "@/providers/app-provider";
 import { ErrorResponse } from "@/types/utils.types";
-import { isEmpty } from "lodash";
 
 type FormSchema = UpdateMeSchema;
 
@@ -49,6 +44,7 @@ const ProfileForm = () => {
 
   const { handleSubmit, control, setValue, setError } = form;
   const { toast } = useToast();
+  const { setUser } = useContext(AppContext);
 
   // Query: Lấy thông tin tài khoản đăng nhập
   const getMeQuery = useQuery({
@@ -66,7 +62,9 @@ const ProfileForm = () => {
   const updateMeMutation = useMutation({
     mutationKey: ["update-me"],
     mutationFn: userApis.updateMe,
-    onSuccess: () => {
+    onSuccess: (data) => {
+      const { user } = data.data.data;
+      setUser(user);
       getMeQuery.refetch();
       toast({
         title: "Cập nhật thông tin thành công",
@@ -197,13 +195,15 @@ const ProfileForm = () => {
                 <Textarea
                   placeholder="Hãy kể cho chúng tôi một chút về bản thân bạn"
                   className="resize-none"
+                  rows={5}
                   disabled={updateMeMutation.isPending}
                   {...field}
                 />
               </FormControl>
               <FormDescription>
-                You can <span>@mention</span> other users and organizations to
-                link to them.
+                Đây là một nơi tuyệt vời để nói về bản thân bạn. Bạn có thể kể
+                về sở thích, sở trường, kinh nghiệm làm việc, hoặc bất cứ điều
+                gì bạn muốn.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -214,41 +214,13 @@ const ProfileForm = () => {
           control={control}
           name="date_of_birth"
           render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Sinh nhật</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-[240px] pl-3 text-left font-normal",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value ? (
-                        format(field.value, "PPP")
-                      ) : (
-                        <span>Chọn ngày sinh</span>
-                      )}
-                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    disabled={(date) =>
-                      date > new Date() || date < new Date("1900-01-01")
-                    }
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
+            <FormItem>
+              <FormLabel>Ngày sinh</FormLabel>
+              <FormControl>
+                <DateSelect {...field} />
+              </FormControl>
               <FormDescription>
-                Ngày sinh của bạn được sử dụng để tính tuổi của bạn.
+                Ngày sinh của bạn sẽ được hiển thị trên hồ sơ của bạn.
               </FormDescription>
               <FormMessage />
             </FormItem>
