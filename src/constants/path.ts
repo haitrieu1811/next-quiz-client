@@ -2,6 +2,7 @@ const PATH = {
   HOME: "/",
   LOGIN: "/login",
   REGISTER: "/register",
+  PROFILE: "/profile",
   SETTING: "/setting",
   SETTING_PROFILE: "/setting/profile",
   SETTING_PHOTO: "/setting/photo",

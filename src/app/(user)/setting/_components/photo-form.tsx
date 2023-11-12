@@ -19,6 +19,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { AppContext } from "@/providers/app-provider";
+import classNames from "classnames";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const PhotoForm = () => {
   const [avatarFile, setAtavarFile] = useState<File | null>(null);
@@ -105,14 +107,14 @@ const PhotoForm = () => {
 
   return (
     <form onSubmit={onSubmit} className="space-y-8">
-      <div
-        style={{
-          backgroundImage: `url(${
-            avatarReview ? avatarReview : user?.avatar_url || ""
-          })`,
-        }}
-        className="w-20 h-20 rounded-full bg-cover bg-center"
-      />
+      <Avatar className="w-20 h-20">
+        <AvatarImage
+          src={avatarReview ? avatarReview : user?.avatar_url || undefined}
+          alt={user?.username}
+          className="object-cover"
+        />
+        <AvatarFallback>{user?.username[0].toUpperCase()}</AvatarFallback>
+      </Avatar>
 
       <div className="space-y-3">
         <Label className="mb-1">Ảnh đại diện</Label>
@@ -126,12 +128,14 @@ const PhotoForm = () => {
       </div>
 
       <div
+        className="w-56 h-32 rounded-lg bg-cover bg-center bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%"
         style={{
-          backgroundImage: `url(${
-            coverReview ? coverReview : user?.cover_url || ""
-          })`,
+          backgroundImage: `${
+            coverReview || user?.cover_url
+              ? `url(${coverReview || user?.cover_url})`
+              : undefined
+          }`,
         }}
-        className="w-56 h-32 rounded-lg bg-cover bg-center"
       />
 
       <div className="space-y-3">
@@ -145,12 +149,22 @@ const PhotoForm = () => {
         />
       </div>
 
-      <Button type="submit">
-        {(uploadImageMutation.isPending || updateMeMutation.isPending) && (
-          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-        )}
-        Cập nhật hình ảnh
-      </Button>
+      <div
+        className={classNames({
+          "cursor-not-allowed":
+            uploadImageMutation.isPending || updateMeMutation.isPending,
+        })}
+      >
+        <Button
+          type="submit"
+          disabled={uploadImageMutation.isPending || updateMeMutation.isPending}
+        >
+          {(uploadImageMutation.isPending || updateMeMutation.isPending) && (
+            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+          )}
+          Cập nhật hình ảnh
+        </Button>
+      </div>
     </form>
   );
 };

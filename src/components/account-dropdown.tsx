@@ -59,6 +59,12 @@ const AccountDropdown = () => {
         <DropdownMenuLabel>{user?.username}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem
+          onClick={() => router.push(`${PATH.PROFILE}/${user?.username}`)}
+          className="cursor-pointer"
+        >
+          Trang cá nhân
+        </DropdownMenuItem>
+        <DropdownMenuItem
           onClick={() => router.push(PATH.SETTING)}
           className="cursor-pointer"
         >

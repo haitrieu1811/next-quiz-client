@@ -59,3 +59,8 @@ export type GetMeResponse = SuccessResponse<{
 export type UpdateMeResponse = SuccessResponse<{
   user: UserType;
 }>;
+
+// Response: Lấy thông tin người dùng theo username
+export type GetUserByUsernameResponse = SuccessResponse<{
+  user: UserType;
+}>;

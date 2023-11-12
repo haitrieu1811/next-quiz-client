@@ -4,6 +4,7 @@ import { AuthResponse } from "@/types/auth.types";
 import {
   ChangePasswordReqBody,
   GetMeResponse,
+  GetUserByUsernameResponse,
   LoginReqBody,
   RegisterReqBody,
   UpdateMeReqBody,
@@ -48,6 +49,11 @@ const userApis = {
   // Đổi mật khẩu
   changePassword(body: ChangePasswordReqBody) {
     return http.patch(URL_CHANGE_PASSWORD, body);
+  },
+
+  // Lấy thông tin người dùng theo username
+  getUserByUsername(username: string) {
+    return http.get<GetUserByUsernameResponse>(`/users/${username}`);
   },
 };
 
