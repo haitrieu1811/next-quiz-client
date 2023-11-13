@@ -22,7 +22,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { UpdateMeSchema, updateMeSchema } from "@/lib/rules";
+import { UpdateMeSchema, updateMeSchema } from "@/rules/user.rules";
 import { isEntityError } from "@/lib/utils";
 import { AppContext } from "@/providers/app-provider";
 import { ErrorResponse } from "@/types/utils.types";

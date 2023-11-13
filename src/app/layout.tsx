@@ -20,9 +20,10 @@ export const metadata: Metadata = {
 
 interface Props {
   children: React.ReactNode;
+  overlay: React.ReactNode;
 }
 
-const RootLayout = ({ children }: Props) => {
+const RootLayout = ({ children, overlay }: Props) => {
   return (
     <html lang="en">
       <body
@@ -38,6 +39,7 @@ const RootLayout = ({ children }: Props) => {
             enableSystem
             disableTransitionOnChange
           >
+            {overlay}
             <AppProvider>{children}</AppProvider>
             <Toaster />
           </ThemeProvider>

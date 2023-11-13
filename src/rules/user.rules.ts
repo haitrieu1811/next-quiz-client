@@ -4,11 +4,10 @@ import * as z from "zod";
 
 import { UserGender } from "@/constants/enum";
 import { USERS_MESSAGES } from "@/constants/messages";
-import { numberEnumToArray } from "./utils";
+import { numberEnumToArray } from "@/lib/utils";
 
 const userGenders = numberEnumToArray(UserGender);
 
-// User
 export const userSchema = z.object({
   email: z.string().email({
     message: USERS_MESSAGES.INVALID_EMAIL,

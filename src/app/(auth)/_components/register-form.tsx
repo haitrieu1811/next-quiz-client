@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import { RegisterSchema, registerSchema } from "@/lib/rules";
+import { RegisterSchema, registerSchema } from "@/rules/user.rules";
 import { isEntityError } from "@/lib/utils";
 import { AppContext } from "@/providers/app-provider";
 import { ErrorResponse } from "@/types/utils.types";

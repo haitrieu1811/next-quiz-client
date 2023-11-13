@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import { ChangePasswordSchema, changePasswordSchema } from "@/lib/rules";
+import { ChangePasswordSchema, changePasswordSchema } from "@/rules/user.rules";
 import { isEntityError } from "@/lib/utils";
 import { ErrorResponse } from "@/types/utils.types";
 

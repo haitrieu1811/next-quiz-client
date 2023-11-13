@@ -15,6 +15,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import PATH from "@/constants/path";
+import Link from "next/link";
 
 type ProfileProps = {
   params: {
@@ -76,7 +78,11 @@ const Profile = ({ params }: ProfileProps) => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem>Tạo bài quiz</DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href={PATH.CREATE_QUIZ} scroll={false}>
+                    Tạo bài quiz
+                  </Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem>Tạo câu hỏi</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

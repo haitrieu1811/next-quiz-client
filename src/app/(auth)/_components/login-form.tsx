@@ -17,7 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { LoginSchema, loginSchema } from "@/lib/rules";
+import { LoginSchema, loginSchema } from "@/rules/user.rules";
 import { isEntityError } from "@/lib/utils";
 import { ErrorResponse } from "@/types/utils.types";
 import { useContext } from "react";

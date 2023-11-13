@@ -23,6 +23,7 @@ export type CreateQuizReqBody = {
   level: QuizLevel;
   topic?: string;
   description?: string;
+  thumbnail?: string;
 };
 
 // Request: Lấy danh sách các quiz
@@ -38,6 +39,7 @@ export type UpdateQuizReqBody = {
   level?: QuizLevel;
   topic?: string;
   description?: string;
+  thumbnail?: string;
 };
 
 // Request: Xóa một hoặc nhiều quiz

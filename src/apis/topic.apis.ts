@@ -12,7 +12,7 @@ import {
 export const URL_CREATE_QUIZ_TOPIC = "/topics";
 export const URL_UPDATE_QUIZ_TOPIC = "/topics";
 
-const quizApis = {
+const topicApis = {
   // Tạo chủ đề quiz mới
   createTopic(body: CreateTopicReqBody) {
     return http.post<CreateTopicResponse>(URL_CREATE_QUIZ_TOPIC, body);
@@ -33,7 +33,7 @@ const quizApis = {
   },
 
   // Lấy danh sách chủ đề quiz
-  getTopics(params: PaginationReqQuery) {
+  getTopics(params?: PaginationReqQuery) {
     return http.get<GetTopicsResponse>(URL_UPDATE_QUIZ_TOPIC, { params });
   },
 
@@ -43,4 +43,4 @@ const quizApis = {
   },
 };
 
-export default quizApis;
+export default topicApis;
