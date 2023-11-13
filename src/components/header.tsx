@@ -3,7 +3,7 @@
 import classNames from "classnames";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import {
   NavigationMenu,
@@ -57,6 +57,11 @@ const createNew: { title: string; href: string; description: string }[] = [
 const Header = () => {
   const pathname = usePathname();
   const { isAuthenticated } = useContext(AppContext);
+  const [isClient, setIsClient] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   return (
     <header className="sticky top-0 left-0 right-0 z-10 bg-background border-b border-b-border">
@@ -187,8 +192,8 @@ const Header = () => {
           <div className="mr-5">
             <ModeToggle />
           </div>
-          {isAuthenticated && <AccountDropdown />}
-          {!isAuthenticated && (
+          {isAuthenticated && isClient && <AccountDropdown />}
+          {!isAuthenticated && isClient && (
             <Link
               href={PATH.LOGIN}
               className={buttonVariants({ variant: "secondary" })}
