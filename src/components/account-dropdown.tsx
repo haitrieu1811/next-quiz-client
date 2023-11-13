@@ -55,8 +55,15 @@ const AccountDropdown = () => {
           </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" sideOffset={10} className="w-48">
-        <DropdownMenuLabel>{user?.username}</DropdownMenuLabel>
+      <DropdownMenuContent align="end" sideOffset={10} className="w-56">
+        <DropdownMenuLabel className="font-normal">
+          <div className="flex flex-col space-y-1">
+            <p className="text-sm font-medium leading-none">{user?.username}</p>
+            <p className="text-xs leading-none text-muted-foreground">
+              {user?.email}
+            </p>
+          </div>
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={() => router.push(`${PATH.PROFILE}/${user?.username}`)}
@@ -78,6 +85,12 @@ const AccountDropdown = () => {
         </DropdownMenuItem>
         <DropdownMenuItem className="cursor-pointer">
           Lịch sử trả lời
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => router.push(PATH.DASHBOARD)}
+          className="cursor-pointer"
+        >
+          Dashboard
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={logout} className="cursor-pointer">

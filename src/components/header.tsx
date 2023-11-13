@@ -34,6 +34,26 @@ const quizzes: { title: string; href: string; description: string }[] = [
   },
 ];
 
+const createNew: { title: string; href: string; description: string }[] = [
+  {
+    title: "Chủ đề",
+    href: PATH.CONTRIBUTE_CREATE_QUIZ,
+    description: "Tạo chủ đề mới và chia sẻ với mọi người.",
+  },
+  {
+    title: "Bài quiz",
+    href: PATH.CONTRIBUTE_CREATE_QUIZ,
+    description:
+      "Tạo bài quiz mới và chia sẻ với mọi người. Bạn có thể tạo bài quiz về bất kỳ chủ đề nào.",
+  },
+  {
+    title: "Câu hỏi",
+    href: PATH.CONTRIBUTE_CREATE_QUESTION,
+    description:
+      "Khi đã có bài quiz thì bạn có thể tạo câu hỏi cho bài quiz đó.",
+  },
+];
+
 const Header = () => {
   const pathname = usePathname();
   const { isAuthenticated } = useContext(AppContext);
@@ -131,16 +151,35 @@ const Header = () => {
               </Link>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <Link href={PATH.CONTRIBUTE} legacyBehavior passHref>
-                <NavigationMenuLink
-                  className={classNames(navigationMenuTriggerStyle(), {
-                    "text-zinc-500 dark:text-zinc-400":
-                      pathname !== PATH.CONTRIBUTE,
-                  })}
-                >
-                  Đóng góp
-                </NavigationMenuLink>
-              </Link>
+              <NavigationMenuTrigger
+                className={classNames({
+                  "text-zinc-500 dark:text-zinc-400":
+                    pathname !== PATH.CONTRIBUTE,
+                })}
+              >
+                Đóng góp
+              </NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <ul className="grid w-[400px] gap-3 p-3 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                  {createNew.map((quiz) => (
+                    <li key={quiz.href}>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          href={quiz.href}
+                          className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                        >
+                          <div className="text-sm font-semibold">
+                            {quiz.title}
+                          </div>
+                          <p className="line-clamp-2 text-sm text-muted-foreground">
+                            {quiz.description}
+                          </p>
+                        </Link>
+                      </NavigationMenuLink>
+                    </li>
+                  ))}
+                </ul>
+              </NavigationMenuContent>
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>

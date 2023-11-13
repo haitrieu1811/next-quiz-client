@@ -133,6 +133,7 @@ const ProfileForm = () => {
             </FormItem>
           )}
         />
+
         {/* Fullname */}
         <FormField
           control={control}
@@ -154,6 +155,7 @@ const ProfileForm = () => {
             </FormItem>
           )}
         />
+
         {/* Email */}
         <FormItem>
           <FormLabel>Email</FormLabel>
@@ -163,6 +165,7 @@ const ProfileForm = () => {
           </FormDescription>
           <FormMessage />
         </FormItem>
+
         {/* Phone number */}
         <FormField
           control={control}
@@ -184,6 +187,7 @@ const ProfileForm = () => {
             </FormItem>
           )}
         />
+
         {/* Bio */}
         <FormField
           control={control}
@@ -209,6 +213,7 @@ const ProfileForm = () => {
             </FormItem>
           )}
         />
+
         {/* Date of birth */}
         <FormField
           control={control}
@@ -226,6 +231,7 @@ const ProfileForm = () => {
             </FormItem>
           )}
         />
+
         {/* Submit */}
         <Button type="submit">
           {updateMeMutation.isPending && (

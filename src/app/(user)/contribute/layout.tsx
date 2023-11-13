@@ -14,30 +14,30 @@ import SidebarNav from "./_components/sidebar-nav";
 
 const sidebarNavItems = [
   {
-    title: "Hồ sơ",
-    href: PATH.SETTING,
+    title: "Tạo quiz",
+    href: PATH.CONTRIBUTE_CREATE_QUIZ,
   },
   {
-    title: "Hình ảnh",
-    href: PATH.SETTING_PHOTO,
+    title: "Tạo câu hỏi",
+    href: PATH.CONTRIBUTE_CREATE_QUESTION,
   },
   {
-    title: "Đổi mật khẩu",
-    href: PATH.SETTING_CHANGE_PASSWORD,
+    title: "Tạo chủ đề",
+    href: PATH.CONTRIBUTE_CREATE_TOPIC,
   },
 ];
 
-interface SettingsLayoutProps {
+interface ContributeLayoutProps {
   children: React.ReactNode;
 }
 
-const SettingsLayout = ({ children }: SettingsLayoutProps) => {
+const Contribute = ({ children }: ContributeLayoutProps) => {
   return (
     <div className="hidden space-y-6 p-10 md:block">
       <div className="space-y-0.5">
-        <h2 className="text-2xl font-bold tracking-tight">Cài đặt</h2>
+        <h2 className="text-2xl font-bold tracking-tight">Đóng góp</h2>
         <p className="text-muted-foreground">
-          Quản lý cài đặt tài khoản của bạn.
+          Đóng góp cho cộng đồng bằng cách tạo bài quiz và câu hỏi mới.
         </p>
       </div>
       <Separator className="my-6" />
@@ -51,8 +51,8 @@ const SettingsLayout = ({ children }: SettingsLayoutProps) => {
   );
 };
 
-SettingsLayout.propTypes = {
+Contribute.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-export default protectedRoute(SettingsLayout);
+export default protectedRoute(Contribute);

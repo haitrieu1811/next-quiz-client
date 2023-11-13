@@ -1,11 +1,19 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { MoreHorizontal } from "lucide-react";
 import { Fragment, useMemo } from "react";
 
 import userApis from "@/apis/user.apis";
 import Quiz from "@/components/quiz";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type ProfileProps = {
@@ -42,23 +50,36 @@ const Profile = ({ params }: ProfileProps) => {
               }`,
             }}
           />
-          <div className="flex items-center p-10">
-            <Avatar className="w-40 h-40">
-              <AvatarImage
-                src={user.avatar_url || undefined}
-                alt={user.username}
-              />
-              <AvatarFallback className="text-3xl">
-                {user.username[0].toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <div className="ml-10">
-              <h4 className="font-bold text-4xl text-foreground">
-                {user.fullname}
-              </h4>
-              <div className="text-zinc-500 my-3">@{user.username}</div>
-              <div className="text-zinc-500">{user.bio}</div>
+          <div className="flex justify-between items-center p-10">
+            <div className="flex items-center">
+              <Avatar className="w-40 h-40">
+                <AvatarImage
+                  src={user.avatar_url || undefined}
+                  alt={user.username}
+                />
+                <AvatarFallback className="text-3xl">
+                  {user.username[0].toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <div className="ml-10">
+                <h4 className="font-bold text-4xl text-foreground">
+                  {user.fullname}
+                </h4>
+                <div className="text-zinc-500 my-3">@{user.username}</div>
+                <div className="text-zinc-500">{user.bio}</div>
+              </div>
             </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button size="icon" variant="secondary">
+                  <MoreHorizontal strokeWidth={1} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem>Tạo bài quiz</DropdownMenuItem>
+                <DropdownMenuItem>Tạo câu hỏi</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           <div className="p-10">
             <Tabs defaultValue="home">
