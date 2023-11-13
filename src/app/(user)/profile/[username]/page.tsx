@@ -2,8 +2,10 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { MoreHorizontal } from "lucide-react";
+import Link from "next/link";
 import { Fragment, useMemo } from "react";
 
+import quizApis from "@/apis/quiz.apis";
 import userApis from "@/apis/user.apis";
 import Quiz from "@/components/quiz";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -16,7 +18,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PATH from "@/constants/path";
-import Link from "next/link";
 
 type ProfileProps = {
   params: {
@@ -38,6 +39,19 @@ const Profile = ({ params }: ProfileProps) => {
   const user = useMemo(
     () => getUserQuery.data?.data.data.user,
     [getUserQuery.data?.data.data.user]
+  );
+
+  // Query: Danh sách các bài quiz
+  const getQuizzesQuery = useQuery({
+    queryKey: ["get-quizzes-by-user-id", user?._id],
+    queryFn: () => quizApis.getQuizzes({ user_id: user?._id }),
+    enabled: !!user?._id,
+  });
+
+  // Danh sách các bài quiz
+  const quizzes = useMemo(
+    () => getQuizzesQuery.data?.data.data.quizzes || [],
+    [getQuizzesQuery.data?.data.data.quizzes]
   );
 
   return (
@@ -97,11 +111,9 @@ const Profile = ({ params }: ProfileProps) => {
               </TabsList>
               <TabsContent value="home">
                 <div className="grid grid-cols-12 gap-5 py-6">
-                  {Array(8)
-                    .fill(0)
-                    .map((_, index) => (
-                      <Quiz key={index} className="col-span-3" />
-                    ))}
+                  {quizzes.map((quiz) => (
+                    <Quiz key={quiz._id} quiz={quiz} className="col-span-3" />
+                  ))}
                 </div>
               </TabsContent>
               <TabsContent value="favourite">

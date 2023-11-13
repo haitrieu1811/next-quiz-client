@@ -127,7 +127,7 @@ const CreateQuizForm = () => {
   });
 
   // Submit form
-  const onSubmit = form.handleSubmit((data) => {
+  const onSubmit = form.handleSubmit(async (data) => {
     const body = {
       ...data,
       level: Number(data.level),
@@ -135,15 +135,12 @@ const CreateQuizForm = () => {
     if (thumbnailFile) {
       const formData = new FormData();
       formData.append("image", thumbnailFile);
-      uploadImageMutation.mutate(formData, {
-        onSuccess: (data) => {
-          const { images } = data.data.data;
-          const { _id } = images[0];
-          body.thumbnail = _id;
-          createQuizMutation.mutate(body);
-        },
-      });
+      const res = await uploadImageMutation.mutateAsync(formData);
+      const { images } = res.data.data;
+      const { _id } = images[0];
+      body.thumbnail = _id;
     }
+    createQuizMutation.mutate(body);
   });
 
   return (

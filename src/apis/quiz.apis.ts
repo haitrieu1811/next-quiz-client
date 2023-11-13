@@ -21,7 +21,7 @@ const quizApis = {
   },
 
   // Lấy danh sách các quiz
-  getQuizzes(params: GetQuizzesReqQuery) {
+  getQuizzes(params?: GetQuizzesReqQuery) {
     return http.get<GetQuizzesResponse>(URL_GET_QUIZZES, { params });
   },
 

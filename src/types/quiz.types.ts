@@ -1,18 +1,38 @@
-import { QuizLevel } from "@/constants/enum";
+import { QuizLevel, UserGender, UserRole, UserStatus } from "@/constants/enum";
 import {
   PaginationReqQuery,
   PaginationType,
   SuccessResponse,
 } from "./utils.types";
+import { TopicType } from "./topic.types";
+
+// Type: Tác giả của quiz
+export type QuizAuthorType = {
+  _id: string;
+  email: string;
+  fullname: string;
+  username: string;
+  avatar: string;
+  cover: string;
+  bio: string;
+  gender: UserGender;
+  date_of_birth: string;
+  phone_number: string;
+  status: UserStatus;
+  role: UserRole;
+  created_at: string;
+  updated_at: string;
+};
 
 // Type: Quiz
 export type QuizType = {
   _id: string;
   name: string;
-  thumbnail: string | null;
-  level: number;
-  topic: string | null;
   description: string;
+  thumbnail: string;
+  level: number;
+  author: QuizAuthorType;
+  topic: TopicType;
   created_at: string;
   updated_at: string;
 };
@@ -31,6 +51,7 @@ export type GetQuizzesReqQuery = PaginationReqQuery & {
   name?: string;
   level?: number;
   topic?: string;
+  user_id?: string;
 };
 
 // Request: Cập nhật thông tin một quiz
