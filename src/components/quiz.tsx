@@ -44,8 +44,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { useToast } from "./ui/use-toast";
-
-moment.locale("vi");
+import fallbackThumbnail from "@/assets/images/quiz-example.jpg";
+import Image from "next/image";
 
 interface QuizProps {
   className?: string;
@@ -101,13 +101,12 @@ const Quiz = ({ className, quiz }: QuizProps) => {
       <Card className={className}>
         <CardHeader className="p-4">
           <Link href={PATH.HOME}>
-            <div
-              className="h-40 bg-muted bg-center bg-cover rounded-lg"
-              style={{
-                backgroundImage: `${
-                  quiz.thumbnail ? `url(${quiz.thumbnail})` : undefined
-                }`,
-              }}
+            <Image
+              src={quiz.thumbnail ? quiz.thumbnail : fallbackThumbnail}
+              width="150"
+              height="150"
+              className="w-full h-40 object-cover rounded-lg"
+              alt={quiz.name}
             />
           </Link>
         </CardHeader>

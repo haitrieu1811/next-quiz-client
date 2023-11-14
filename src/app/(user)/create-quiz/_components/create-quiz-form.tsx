@@ -49,6 +49,7 @@ import { QuizLevel } from "@/constants/enum";
 import { cn } from "@/lib/utils";
 import { CreateQuizSchema, createQuizSchema } from "@/rules/quiz.rules";
 import { CaretSortIcon } from "@radix-ui/react-icons";
+import { QUIZZES_MESSAGES } from "@/constants/messages";
 
 const quizLevels = [
   { value: QuizLevel.Easy, label: "Dễ" },
@@ -150,8 +151,8 @@ const CreateQuizForm = ({ quiz_id }: CreateQuizFormProps) => {
       setThumbnailFile(null);
       thumbnailRef.current?.value && (thumbnailRef.current.value = "");
       toast({
-        title: "Tạo quiz thành công",
-        description: "Bạn đã tạo quiz thành công.",
+        title: QUIZZES_MESSAGES.CREATE_QUIZ_SUCCESS_TITLE,
+        description: QUIZZES_MESSAGES.CREATE_QUIZ_SUCCESS_DESCRIPTION,
       });
     },
   });

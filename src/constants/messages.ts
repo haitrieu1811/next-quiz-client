@@ -15,4 +15,11 @@ export const QUIZZES_MESSAGES = {
   QUIZ_NAME_LENGTH_IS_INVALID: "Tên bài quiz phải từ 6 đến 255 ký tự",
   QUIZ_DESCRIPTION_LENGTH_IS_INVALID:
     "Mô tả bài quiz phải từ 20 đến 1000 ký tự",
-};
+  QUESTION_NAME_IS_REQUIRED: "Tên câu hỏi không được để trống",
+  ANSWER_NAME_IS_REQUIRED: "Tên câu trả lời không được để trống",
+  QUIZ_ID_IS_REQUIRED: "ID bài trắc nghiệm không được để trống",
+  CREATE_QUESTION_SUCCESS: "Tạo câu hỏi thành công",
+  CREATE_QUESTION_SUCCESS_DESCRIPTION: "Câu hỏi đã được thêm vào bài quiz",
+  CREATE_QUIZ_SUCCESS_TITLE: "Tạo bài quiz thành công",
+  CREATE_QUIZ_SUCCESS_DESCRIPTION: "Bài quiz đã được tạo thành công",
+} as const;

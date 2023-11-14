@@ -5,7 +5,6 @@ export type AnswerType = {
   name: string;
   description: string;
   is_correct: boolean;
-  images: string[];
 };
 
 // Type: Question

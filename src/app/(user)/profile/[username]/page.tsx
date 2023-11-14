@@ -45,7 +45,7 @@ const Profile = ({ params }: ProfileProps) => {
 
   // Query: Danh sách các bài quiz
   const getQuizzesQuery = useQuery({
-    queryKey: ["get-quizzes", user?._id],
+    queryKey: ["quizzes-of-logged-user", user?._id],
     queryFn: () => quizApis.getQuizzes({ user_id: user?._id }),
     enabled: !!user?._id,
   });
@@ -68,6 +68,7 @@ const Profile = ({ params }: ProfileProps) => {
               }`,
             }}
           />
+
           <div className="flex justify-between items-center py-10">
             <div className="flex items-center">
               <Avatar className="w-40 h-40">
@@ -100,11 +101,16 @@ const Profile = ({ params }: ProfileProps) => {
                       Tạo bài trắc nghiệm
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>Tạo câu hỏi</DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href={PATH.CREATE_QUESTION} scroll={false}>
+                      Tạo câu hỏi
+                    </Link>
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
           </div>
+
           <div className="py-10">
             <Tabs defaultValue="home">
               <TabsList>

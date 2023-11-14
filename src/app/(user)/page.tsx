@@ -1,14 +1,15 @@
 "use client";
 
-import quizApis from "@/apis/quiz.apis";
-import Quiz from "@/components/quiz";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
+
+import quizApis from "@/apis/quiz.apis";
+import Quiz from "@/components/quiz";
 
 const Home = () => {
   // Query: Danh sách các bài quiz
   const getQuizzesQuery = useQuery({
-    queryKey: ["get-quizzes"],
+    queryKey: ["quizzes"],
     queryFn: () => quizApis.getQuizzes(),
   });
 
