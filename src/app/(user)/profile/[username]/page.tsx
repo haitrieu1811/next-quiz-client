@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
-import { Fragment, useMemo } from "react";
+import { Fragment, useContext, useMemo } from "react";
 
 import quizApis from "@/apis/quiz.apis";
 import userApis from "@/apis/user.apis";
@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PATH from "@/constants/path";
+import { AppContext } from "@/providers/app-provider";
 
 type ProfileProps = {
   params: {
@@ -27,6 +28,7 @@ type ProfileProps = {
 
 const Profile = ({ params }: ProfileProps) => {
   const { username } = params;
+  const { user: profile } = useContext(AppContext);
 
   // Query: Lấy thông tin user theo username
   const getUserQuery = useQuery({
@@ -43,7 +45,7 @@ const Profile = ({ params }: ProfileProps) => {
 
   // Query: Danh sách các bài quiz
   const getQuizzesQuery = useQuery({
-    queryKey: ["get-quizzes-by-user-id", user?._id],
+    queryKey: ["get-quizzes", user?._id],
     queryFn: () => quizApis.getQuizzes({ user_id: user?._id }),
     enabled: !!user?._id,
   });
@@ -66,7 +68,7 @@ const Profile = ({ params }: ProfileProps) => {
               }`,
             }}
           />
-          <div className="flex justify-between items-center p-10">
+          <div className="flex justify-between items-center py-10">
             <div className="flex items-center">
               <Avatar className="w-40 h-40">
                 <AvatarImage
@@ -85,23 +87,25 @@ const Profile = ({ params }: ProfileProps) => {
                 <div className="text-zinc-500">{user.bio}</div>
               </div>
             </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button size="icon" variant="secondary">
-                  <MoreHorizontal strokeWidth={1} />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem asChild>
-                  <Link href={PATH.CREATE_QUIZ} scroll={false}>
-                    Tạo bài quiz
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>Tạo câu hỏi</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {user._id === profile?._id && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button size="icon" variant="secondary">
+                    <MoreHorizontal strokeWidth={1} />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem asChild>
+                    <Link href={PATH.CREATE_QUIZ} scroll={false}>
+                      Tạo bài quiz
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>Tạo câu hỏi</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
-          <div className="p-10">
+          <div className="py-10">
             <Tabs defaultValue="home">
               <TabsList>
                 <TabsTrigger value="home">Trang chủ</TabsTrigger>

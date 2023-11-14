@@ -14,6 +14,7 @@ const PATH = {
   CREATE_QUIZ: "/create-quiz",
   CREATE_QUESTION: "/create-question",
   CREATE_TOPIC: "/create-topic",
+  UPDATE_QUIZ: "/update-quiz",
 } as const;
 
 export default PATH;

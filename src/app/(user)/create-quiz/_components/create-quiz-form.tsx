@@ -1,10 +1,13 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import isUndefined from "lodash/isUndefined";
+import omitBy from "lodash/omitBy";
 import { CheckIcon, Loader2 } from "lucide-react";
 import Image from "next/image";
-import { ChangeEvent, useMemo, useRef, useState } from "react";
+import PropTypes from "prop-types";
+import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import imageApis from "@/apis/image.apis";
@@ -54,10 +57,28 @@ const quizLevels = [
   { value: QuizLevel.VeryHard, label: "Rất khó" },
 ] as const;
 
-const CreateQuizForm = () => {
+type CreateQuizFormProps = {
+  quiz_id?: string;
+};
+
+const CreateQuizForm = ({ quiz_id }: CreateQuizFormProps) => {
+  const queryClient = useQueryClient();
   const { toast } = useToast();
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const thumbnailRef = useRef<HTMLInputElement>(null);
+
+  // Query: Lấy thông tin quiz (ở chế độ chỉnh sửa)
+  const getQuizQuery = useQuery({
+    queryKey: ["get-quiz", quiz_id],
+    queryFn: () => quizApis.getQuiz(quiz_id as string),
+    enabled: !!quiz_id,
+  });
+
+  // Thông tin quiz (ở chế độ chỉnh sửa)
+  const quiz = useMemo(
+    () => getQuizQuery.data?.data.data.quiz,
+    [getQuizQuery.data?.data.data.quiz]
+  );
 
   // Handle: Thay đổi ảnh đại diện
   const handleChangeThumbnail = (e: ChangeEvent<HTMLInputElement>) => {
@@ -104,6 +125,15 @@ const CreateQuizForm = () => {
     },
   });
 
+  // Set giá trị mặc định cho form (ở chế độ chỉnh sửa)
+  useEffect(() => {
+    if (!quiz) return;
+    form.setValue("name", quiz.name);
+    form.setValue("description", quiz.description);
+    form.setValue("topic_id", quiz.topic._id);
+    form.setValue("level", String(quiz.level));
+  }, [quiz]);
+
   // Mutation: Upload ảnh
   const uploadImageMutation = useMutation({
     mutationKey: ["upload-image"],
@@ -126,6 +156,22 @@ const CreateQuizForm = () => {
     },
   });
 
+  // Mutation: Cập nhật quiz
+  const updateQuizMutation = useMutation({
+    mutationFn: quizApis.updateQuiz,
+    onSuccess: () => {
+      setThumbnailFile(null);
+      thumbnailRef.current?.value && (thumbnailRef.current.value = "");
+      toast({
+        title: "Cập nhật quiz thành công",
+        description: "Bạn đã cập nhật quiz thành công.",
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["get-quizzes"],
+      });
+    },
+  });
+
   // Submit form
   const onSubmit = form.handleSubmit(async (data) => {
     const body = {
@@ -140,8 +186,20 @@ const CreateQuizForm = () => {
       const { _id } = images[0];
       body.thumbnail = _id;
     }
-    createQuizMutation.mutate(body);
+    if (!quiz) {
+      createQuizMutation.mutate(body);
+    } else {
+      const updateBody = omitBy(body, isUndefined);
+      updateQuizMutation.mutate({ quiz_id: quiz._id, body: updateBody });
+      console.log(">>> updateBody", updateBody);
+    }
   });
+
+  // isLoading
+  const isLoading =
+    createQuizMutation.isPending ||
+    updateQuizMutation.isPending ||
+    uploadImageMutation.isPending;
 
   return (
     <Form {...form}>
@@ -150,9 +208,7 @@ const CreateQuizForm = () => {
         <FormField
           control={form.control}
           name="name"
-          disabled={
-            createQuizMutation.isPending || uploadImageMutation.isPending
-          }
+          disabled={isLoading}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Tên</FormLabel>
@@ -171,9 +227,7 @@ const CreateQuizForm = () => {
         <FormField
           control={form.control}
           name="description"
-          disabled={
-            createQuizMutation.isPending || uploadImageMutation.isPending
-          }
+          disabled={isLoading}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Mô tả</FormLabel>
@@ -197,15 +251,13 @@ const CreateQuizForm = () => {
         <FormField
           control={form.control}
           name="level"
-          disabled={
-            createQuizMutation.isPending || uploadImageMutation.isPending
-          }
+          disabled={isLoading}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Độ khó</FormLabel>
               <Select
                 onValueChange={field.onChange}
-                defaultValue={String(field.value)}
+                value={String(field.value)}
               >
                 <FormControl>
                   <SelectTrigger className="w-[200px]">
@@ -233,9 +285,7 @@ const CreateQuizForm = () => {
         <FormField
           control={form.control}
           name="topic_id"
-          disabled={
-            createQuizMutation.isPending || uploadImageMutation.isPending
-          }
+          disabled={isLoading}
           render={({ field }) => (
             <FormItem>
               <FormLabel className="block">Chủ đề</FormLabel>
@@ -305,6 +355,16 @@ const CreateQuizForm = () => {
           name="thumbnail"
           render={({ field }) => (
             <FormItem>
+              {/* Hiển thị nếu có thumbnail và không có ảnh review */}
+              {quiz && quiz.thumbnail && !thumbnailReview && (
+                <Image
+                  src={quiz.thumbnail}
+                  width={120}
+                  height={50}
+                  alt={quiz.name}
+                  className="rounded-lg mb-5"
+                />
+              )}
               {thumbnailReview && (
                 <Image
                   src={thumbnailReview}
@@ -333,20 +393,17 @@ const CreateQuizForm = () => {
         />
 
         {/* Submit */}
-        <Button
-          type="submit"
-          disabled={
-            createQuizMutation.isPending || uploadImageMutation.isPending
-          }
-        >
-          {(createQuizMutation.isPending || uploadImageMutation.isPending) && (
-            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-          )}
-          Tạo quiz
+        <Button type="submit" disabled={isLoading}>
+          {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+          {quiz ? "Cập nhật quiz" : "Tạo quiz"}
         </Button>
       </form>
     </Form>
   );
+};
+
+CreateQuizForm.propTypes = {
+  quiz_id: PropTypes.string,
 };
 
 export default CreateQuizForm;

@@ -79,6 +79,11 @@ export type GetQuizzesResponse = SuccessResponse<{
   pagination: PaginationType;
 }>;
 
+// Response: Lấy thông tin một quiz thành công
+export type GetQuizResponse = SuccessResponse<{
+  quiz: QuizType;
+}>;
+
 // Response: Cập nhật thông tin một quiz thành công
 export type UpdateQuizResponse = SuccessResponse<{
   quiz: QuizType;

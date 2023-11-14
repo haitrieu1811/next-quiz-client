@@ -3,39 +3,38 @@ import {
   CreateQuizReqBody,
   CreateQuizResponse,
   DeleteQuizzesReqBody,
+  GetQuizResponse,
   GetQuizzesReqQuery,
   GetQuizzesResponse,
+  UpdateQuizReqBody,
   UpdateQuizResponse,
 } from "@/types/quiz.types";
 import { OnlyMessageResponse } from "@/types/utils.types";
 
-export const URL_CREATE_QUIZ = "/quizzes";
-export const URL_GET_QUIZZES = "/quizzes";
-export const URL_UPDATE_QUIZ = "/quizzes";
-export const URL_DELETE_QUIZZES = "/quizzes";
-
 const quizApis = {
   // Tạo quiz mới
   createQuiz(body: CreateQuizReqBody) {
-    return http.post<CreateQuizResponse>(URL_CREATE_QUIZ, body);
+    return http.post<CreateQuizResponse>("/quizzes", body);
   },
 
   // Lấy danh sách các quiz
   getQuizzes(params?: GetQuizzesReqQuery) {
-    return http.get<GetQuizzesResponse>(URL_GET_QUIZZES, { params });
+    return http.get<GetQuizzesResponse>("/quizzes", { params });
+  },
+
+  // Lấy thông tin một quiz
+  getQuiz(quiz_id: string) {
+    return http.get<GetQuizResponse>(`/quizzes/${quiz_id}`);
   },
 
   // Cập nhật thông tin một quiz
-  updateQuiz({ quiz_id, body }: { quiz_id: string; body: CreateQuizReqBody }) {
-    return http.patch<UpdateQuizResponse>(
-      `${URL_UPDATE_QUIZ}/${quiz_id}`,
-      body
-    );
+  updateQuiz({ quiz_id, body }: { quiz_id: string; body: UpdateQuizReqBody }) {
+    return http.patch<UpdateQuizResponse>(`/quizzes/${quiz_id}`, body);
   },
 
   // Xóa một hoặc nhiều quiz
   deleteQuizzes(data: DeleteQuizzesReqBody) {
-    return http.delete<OnlyMessageResponse>(URL_DELETE_QUIZZES, { data });
+    return http.delete<OnlyMessageResponse>("/quizzes", { data });
   },
 };
 

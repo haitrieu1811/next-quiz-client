@@ -1,4 +1,5 @@
-import { Fullscreen, Play } from "lucide-react";
+import { MoreVertical } from "lucide-react";
+import { Fragment, useContext } from "react";
 import Link from "next/link";
 
 import {
@@ -9,17 +10,21 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { QuizLevel } from "@/constants/enum";
 import PATH from "@/constants/path";
+import { AppContext } from "@/providers/app-provider";
 import { QuizType } from "@/types/quiz.types";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Badge } from "./ui/badge";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "./ui/tooltip";
+import { Button } from "./ui/button";
 
 interface QuizProps {
   className?: string;
@@ -46,6 +51,7 @@ const levels = {
 };
 
 const Quiz = ({ className, quiz }: QuizProps) => {
+  const { user } = useContext(AppContext);
   return (
     <Card className={className}>
       <CardHeader className="p-4">
@@ -90,22 +96,31 @@ const Quiz = ({ className, quiz }: QuizProps) => {
             {quiz.author.username}
           </span>
         </Link>
-        <div>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <Fullscreen strokeWidth={1.5} width={15} />
-              </TooltipTrigger>
-              <TooltipContent>Xem trước</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger>
-                <Play strokeWidth={1.5} width={15} />
-              </TooltipTrigger>
-              <TooltipContent>Bắt đầu</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button size="icon" variant="secondary" className="w-8 h-8">
+              <MoreVertical size={14} />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuLabel>Tùy chọn</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>Bắt đầu</DropdownMenuItem>
+            <DropdownMenuItem>Lưu</DropdownMenuItem>
+            <DropdownMenuItem>Thích</DropdownMenuItem>
+            <DropdownMenuItem>Xem trước</DropdownMenuItem>
+            {user?._id === quiz.author._id && (
+              <Fragment>
+                <DropdownMenuItem asChild>
+                  <Link href={`${PATH.UPDATE_QUIZ}/${quiz._id}`} scroll={false}>
+                    Sửa
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>Xóa</DropdownMenuItem>
+              </Fragment>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </CardFooter>
     </Card>
   );

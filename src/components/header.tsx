@@ -3,7 +3,7 @@
 import classNames from "classnames";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 
 import {
   NavigationMenu,
@@ -15,6 +15,7 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import PATH from "@/constants/path";
+import useIsClient from "@/hooks/useIsClient";
 import { AppContext } from "@/providers/app-provider";
 import AccountDropdown from "./account-dropdown";
 import { ModeToggle } from "./mode-toggle";
@@ -37,18 +38,18 @@ const quizzes: { title: string; href: string; description: string }[] = [
 const createNew: { title: string; href: string; description: string }[] = [
   {
     title: "Chủ đề",
-    href: PATH.CONTRIBUTE_CREATE_QUIZ,
+    href: PATH.HOME,
     description: "Tạo chủ đề mới và chia sẻ với mọi người.",
   },
   {
     title: "Bài quiz",
-    href: PATH.CONTRIBUTE_CREATE_QUIZ,
+    href: PATH.HOME,
     description:
       "Tạo bài quiz mới và chia sẻ với mọi người. Bạn có thể tạo bài quiz về bất kỳ chủ đề nào.",
   },
   {
     title: "Câu hỏi",
-    href: PATH.CONTRIBUTE_CREATE_QUESTION,
+    href: PATH.HOME,
     description:
       "Khi đã có bài quiz thì bạn có thể tạo câu hỏi cho bài quiz đó.",
   },
@@ -57,11 +58,7 @@ const createNew: { title: string; href: string; description: string }[] = [
 const Header = () => {
   const pathname = usePathname();
   const { isAuthenticated } = useContext(AppContext);
-  const [isClient, setIsClient] = useState<boolean>(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  const isClient = useIsClient();
 
   return (
     <header className="sticky top-0 left-0 right-0 z-10 bg-background border-b border-b-border">
@@ -158,8 +155,7 @@ const Header = () => {
             <NavigationMenuItem>
               <NavigationMenuTrigger
                 className={classNames({
-                  "text-zinc-500 dark:text-zinc-400":
-                    pathname !== PATH.CONTRIBUTE,
+                  "text-zinc-500 dark:text-zinc-400": pathname !== PATH.HOME,
                 })}
               >
                 Đóng góp
