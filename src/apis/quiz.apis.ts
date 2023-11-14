@@ -36,6 +36,11 @@ const quizApis = {
   deleteQuizzes(data: DeleteQuizzesReqBody) {
     return http.delete<OnlyMessageResponse>("/quizzes", { data });
   },
+
+  // Xóa quiz theo id
+  deleteQuiz(quiz_id: string) {
+    return http.delete<OnlyMessageResponse>(`/quizzes/${quiz_id}`);
+  },
 };
 
 export default quizApis;

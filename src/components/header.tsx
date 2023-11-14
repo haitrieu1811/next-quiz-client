@@ -45,7 +45,7 @@ const createNew: { title: string; href: string; description: string }[] = [
     title: "Bài quiz",
     href: PATH.HOME,
     description:
-      "Tạo bài quiz mới và chia sẻ với mọi người. Bạn có thể tạo bài quiz về bất kỳ chủ đề nào.",
+      "Tạo bài trắc nghiệm mới và chia sẻ với mọi người. Bạn có thể tạo bài quiz về bất kỳ chủ đề nào.",
   },
   {
     title: "Câu hỏi",

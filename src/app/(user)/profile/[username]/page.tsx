@@ -97,7 +97,7 @@ const Profile = ({ params }: ProfileProps) => {
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem asChild>
                     <Link href={PATH.CREATE_QUIZ} scroll={false}>
-                      Tạo bài quiz
+                      Tạo bài trắc nghiệm
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>Tạo câu hỏi</DropdownMenuItem>

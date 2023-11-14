@@ -156,14 +156,14 @@ const CreateQuizForm = ({ quiz_id }: CreateQuizFormProps) => {
     },
   });
 
-  // Mutation: Cập nhật quiz
+  // Mutation: Cập nhật bài trắc nghiệm
   const updateQuizMutation = useMutation({
     mutationFn: quizApis.updateQuiz,
     onSuccess: () => {
       setThumbnailFile(null);
       thumbnailRef.current?.value && (thumbnailRef.current.value = "");
       toast({
-        title: "Cập nhật quiz thành công",
+        title: "Cập nhật bài trắc nghiệm thành công",
         description: "Bạn đã cập nhật quiz thành công.",
       });
       queryClient.invalidateQueries({
@@ -191,7 +191,6 @@ const CreateQuizForm = ({ quiz_id }: CreateQuizFormProps) => {
     } else {
       const updateBody = omitBy(body, isUndefined);
       updateQuizMutation.mutate({ quiz_id: quiz._id, body: updateBody });
-      console.log(">>> updateBody", updateBody);
     }
   });
 
@@ -395,7 +394,7 @@ const CreateQuizForm = ({ quiz_id }: CreateQuizFormProps) => {
         {/* Submit */}
         <Button type="submit" disabled={isLoading}>
           {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-          {quiz ? "Cập nhật quiz" : "Tạo quiz"}
+          {quiz ? "Cập nhật bài trắc nghiệm" : "Tạo quiz"}
         </Button>
       </form>
     </Form>

@@ -15,9 +15,11 @@ const UpdateQuiz = ({ params }: UpdateQuizProps) => {
   return (
     <div className="p-10">
       <div className="space-y-0.5">
-        <h2 className="text-2xl font-bold tracking-tight">Cập nhật quiz</h2>
+        <h2 className="text-2xl font-bold tracking-tight">
+          Cập nhật bài trắc nghiệm
+        </h2>
         <p className="text-muted-foreground">
-          Cập nhật quiz để chia sẻ với cộng đồng.
+          Cập nhật bài trắc nghiệm để chia sẻ với cộng đồng.
         </p>
       </div>
       <Separator className="my-6" />
