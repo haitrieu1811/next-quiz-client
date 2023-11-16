@@ -2,6 +2,7 @@ import http from "@/lib/http";
 import {
   CreateQuestionReqBody,
   CreateQuestionResponse,
+  DeleteQuestionImageResponse,
   DeleteQuestionsReqBody,
   GetQuestionResponse,
   GetQuestionsByQuizIdResponse,
@@ -27,7 +28,7 @@ const questionApis = {
     params,
   }: {
     quiz_id: string;
-    params: PaginationReqQuery;
+    params?: PaginationReqQuery;
   }) {
     return http.get<GetQuestionsByQuizIdResponse>(
       `${URL_GET_QUESTIONS_BY_QUIZ_ID}/${quiz_id}`,
@@ -59,6 +60,19 @@ const questionApis = {
   // Lấy câu hỏi theo id
   getQuestion(question_id: string) {
     return http.get<GetQuestionResponse>(`${URL_GET_QUESTION}/${question_id}`);
+  },
+
+  // Xóa hình ảnh của câu hỏi
+  deleteQuestionImage({
+    question_id,
+    image_id,
+  }: {
+    question_id: string;
+    image_id: string;
+  }) {
+    return http.delete<DeleteQuestionImageResponse>(
+      `/questions/${question_id}/images/${image_id}`
+    );
   },
 };
 

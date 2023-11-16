@@ -1,12 +1,16 @@
 import http from "@/lib/http";
 import { UploadImagesResponse } from "@/types/image.types";
-
-export const URL_UPLOAD_IMAGE = "/images/upload";
+import { OnlyMessageResponse } from "@/types/utils.types";
 
 const imageApis = {
   // Tải ảnh lên
   upload(body: FormData) {
-    return http.post<UploadImagesResponse>(URL_UPLOAD_IMAGE, body);
+    return http.post<UploadImagesResponse>("/images/upload", body);
+  },
+
+  // Xóa ảnh
+  delete(id: string) {
+    return http.delete<OnlyMessageResponse>(`/images/${id}`);
   },
 };
 

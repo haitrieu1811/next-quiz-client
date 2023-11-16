@@ -203,7 +203,7 @@ const CreateQuizForm = ({ quiz_id }: CreateQuizFormProps) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={onSubmit} className="space-y-8 px-2">
+      <form onSubmit={onSubmit} className="space-y-8">
         {/* Tên */}
         <FormField
           control={form.control}

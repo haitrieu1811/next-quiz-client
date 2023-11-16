@@ -7,7 +7,7 @@ import classNames from "classnames";
 import isEmpty from "lodash/isEmpty";
 import { CheckCircle, Loader2, Trash } from "lucide-react";
 import Image from "next/image";
-import { ChangeEvent, useContext, useMemo, useState } from "react";
+import { ChangeEvent, useContext, useEffect, useMemo, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 
 import imageApis from "@/apis/image.apis";
@@ -53,8 +53,13 @@ import {
 } from "@/rules/question.rules";
 import { AnswerType } from "@/types/question.types";
 import { ErrorResponse } from "@/types/utils.types";
+import { set } from "lodash";
 
-const CreateQuestionForm = () => {
+type CreateQuestionFormProps = {
+  questionId?: string;
+};
+
+const CreateQuestionForm = ({ questionId }: CreateQuestionFormProps) => {
   // Form
   const form = useForm<CreateQuestionSchema>({
     resolver: zodResolver(createQuestionSchema),
@@ -77,6 +82,36 @@ const CreateQuestionForm = () => {
   const { toast } = useToast();
   const [currentAnswerIndex, setCurrentAnswerIndex] = useState<number>(0);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
+
+  // Query: Lấy thông tin câu hỏi để cập nhật
+  const getQuestionQuery = useQuery({
+    queryKey: ["question", questionId],
+    queryFn: () => questionApis.getQuestion(questionId as string),
+    enabled: !!questionId,
+  });
+
+  // Câu hỏi
+  const question = useMemo(
+    () => getQuestionQuery.data?.data.data.question,
+    [getQuestionQuery.data?.data.data.question]
+  );
+
+  // Set giá trị mặc định cho form khi có câu hỏi
+  useEffect(() => {
+    if (!question) return;
+    const { setValue } = form;
+    setValue("name", question.name);
+    setValue("description", question.description);
+    setValue("quiz_id", question.quiz_id);
+    setValue("answers", question.answers);
+    setValue(
+      "images",
+      question.images.map((image) => image._id)
+    );
+    setCurrentAnswerIndex(
+      question.answers.findIndex((answer) => answer.is_correct)
+    );
+  }, [question]);
 
   // Query: Lấy danh sách bài trắc nghiệm của người dùng hiện tại để chọn
   const getQuizzesQuery = useQuery({
@@ -139,6 +174,11 @@ const CreateQuestionForm = () => {
     },
   });
 
+  // Mutation: Cập nhật câu hỏi
+  const updateQuestionMutation = useMutation({
+    mutationFn: questionApis.updateQuestion,
+  });
+
   // Field array: Danh sách câu trả lời
   const answersFieldArray = useFieldArray({
     name: "answers",
@@ -170,20 +210,71 @@ const CreateQuestionForm = () => {
     setImageFiles((prev) => [...prev, ...Array.from(files)]);
   };
 
-  // Handle: Xóa hình ảnh
-  const handleRemoveImage = (index: number) => {
-    setImageFiles((prev) => prev.filter((_, i) => i !== index));
+  // Mutation: Xóa hình ảnh
+  const deleteImageMutation = useMutation({
+    mutationFn: imageApis.delete,
+    onSuccess: () => {
+      getQuestionQuery.refetch();
+    },
+  });
+
+  // Mutation: Xóa hình ảnh của câu hỏi
+  const deleteQuestionImageMutation = useMutation({
+    mutationFn: questionApis.deleteQuestionImage,
+    onSuccess: () => {
+      toast({
+        title: "Xóa hình ảnh thành công",
+        description: "Hình ảnh đã được xóa khỏi câu hỏi.",
+      });
+      getQuestionQuery.refetch();
+    },
+  });
+
+  // Handle: Xóa hình ảnh (ảnh đã upload và ảnh preview chưa upload)
+  const handleDeleteImage = async ({
+    id,
+    isPreview,
+  }: {
+    id: string | number;
+    isPreview: boolean;
+  }) => {
+    if (isPreview) {
+      const exactIndex = (id as number) - (question?.images.length || 0);
+      setImageFiles((prev) => prev.filter((_, index) => index !== exactIndex));
+    } else {
+      if (!questionId) return;
+      await Promise.all([
+        deleteImageMutation.mutate(id as string),
+        deleteQuestionImageMutation.mutate({
+          question_id: questionId,
+          image_id: id as string,
+        }),
+      ]);
+    }
   };
+
+  // Gộp hình ảnh đã upload và hình ảnh preview chưa upload
+  const allImages = useMemo(
+    () => [...(question?.images || []), ...imagesPreview],
+    [question?.images, imagesPreview]
+  );
 
   // Mutation: Upload hình ảnh
   const uploadImagesMutation = useMutation({
     mutationFn: imageApis.upload,
   });
 
-  // Kiểm tra xem có đang fetching hay không
+  // Kiểm tra xem có đang tải hay không
   const isPending = useMemo(
-    () => uploadImagesMutation.isPending || createQuestionMutation.isPending,
-    [uploadImagesMutation.isPending, createQuestionMutation.isPending]
+    () =>
+      uploadImagesMutation.isPending ||
+      createQuestionMutation.isPending ||
+      updateQuestionMutation.isPending,
+    [
+      uploadImagesMutation.isPending,
+      createQuestionMutation.isPending,
+      updateQuestionMutation.isPending,
+    ]
   );
 
   // Submit form
@@ -191,21 +282,58 @@ const CreateQuestionForm = () => {
     let body = {
       ...data,
       answers: data.answers as AnswerType[],
+      images: question?.images.map((image) => image._id) || [],
     };
-    if (imageFiles.length) {
-      const form = new FormData();
-      imageFiles.forEach((imageFile) => form.append("image", imageFile));
-      const res = await uploadImagesMutation.mutateAsync(form);
-      const { images } = res.data.data;
-      const imagesId = images.map((image) => image._id);
-      body.images = imagesId;
+    // Nếu không có câu hỏi thì tạo mới - ngược lại thì cập nhật
+    if (!question) {
+      createQuestionMutation.mutate(body, {
+        onSuccess: async (data) => {
+          const { _id } = data.data.data.question;
+          if (imageFiles.length) {
+            const form = new FormData();
+            imageFiles.forEach((imageFile) => form.append("image", imageFile));
+            const res = await uploadImagesMutation.mutateAsync(form);
+            const { images } = res.data.data;
+            const imagesId = images.map((image) => image._id);
+            body.images = body.images.concat(imagesId);
+            updateQuestionMutation.mutate({
+              question_id: _id,
+              body,
+            });
+          }
+        },
+      });
+    } else {
+      if (imageFiles.length) {
+        const form = new FormData();
+        imageFiles.forEach((imageFile) => form.append("image", imageFile));
+        const res = await uploadImagesMutation.mutateAsync(form);
+        const { images } = res.data.data;
+        const imagesId = images.map((image) => image._id);
+        body.images = body.images.concat(imagesId);
+      }
+      updateQuestionMutation.mutate(
+        {
+          question_id: questionId as string,
+          body,
+        },
+        {
+          onSuccess: () => {
+            getQuestionQuery.refetch();
+            setImageFiles([]);
+            toast({
+              title: "Cập nhật câu hỏi thành công",
+              description: "Câu hỏi đã được cập nhật thành công.",
+            });
+          },
+        }
+      );
     }
-    createQuestionMutation.mutate(body);
   });
 
   return (
     <Form {...form}>
-      <TooltipProvider delayDuration={0}>
+      <TooltipProvider delayDuration={500}>
         <form onSubmit={onSubmit} className="space-y-10">
           {/* Tên */}
           <FormField
@@ -329,29 +457,39 @@ const CreateQuestionForm = () => {
             render={({ field }) => (
               <div>
                 <div className="grid grid-cols-12 gap-3">
-                  {imagesPreview.map((image) => (
-                    <div key={image} className="col-span-2 relative">
-                      <Image
-                        src={image}
-                        width={100}
-                        height={100}
-                        alt={image}
-                        className="rounded-md mb-4 w-full h-[120px] object-cover"
-                      />
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            size="icon"
-                            variant="destructive"
-                            className="absolute top-1 right-1 w-6 h-6"
-                          >
-                            <Trash size={12} />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>Xóa hình ảnh này</TooltipContent>
-                      </Tooltip>
-                    </div>
-                  ))}
+                  {allImages.map((image, index) => {
+                    const isPreview = typeof image === "string";
+                    const key = isPreview ? index : image._id;
+                    const src = isPreview ? image : image.url;
+                    const alt = isPreview ? image : image.url;
+                    return (
+                      <div key={key} className="col-span-2 relative">
+                        <Image
+                          src={src}
+                          width={100}
+                          height={100}
+                          alt={alt}
+                          className="rounded-md mb-4 w-full h-[120px] object-cover"
+                        />
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              size="icon"
+                              type="button"
+                              variant="destructive"
+                              onClick={() =>
+                                handleDeleteImage({ id: key, isPreview })
+                              }
+                              className="absolute top-1 right-1 w-6 h-6"
+                            >
+                              <Trash size={12} />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Xóa hình ảnh này</TooltipContent>
+                        </Tooltip>
+                      </div>
+                    );
+                  })}
                 </div>
                 <FormItem>
                   <FormLabel>Hình ảnh câu hỏi</FormLabel>
@@ -361,6 +499,7 @@ const CreateQuestionForm = () => {
                       multiple
                       accept="image/*"
                       {...field}
+                      value={undefined}
                       onChange={handleChangeImages}
                     />
                   </FormControl>
@@ -377,10 +516,9 @@ const CreateQuestionForm = () => {
           {/* Danh sách câu trả lời */}
           <div className="space-y-4">
             {answersFieldArray.fields.map((field, index) => (
-              <div>
+              <div key={field.id}>
                 <FormField
                   control={form.control}
-                  key={field.id}
                   name={`answers.${index}.name`}
                   disabled={isPending}
                   render={({ field }) => (
@@ -402,7 +540,7 @@ const CreateQuestionForm = () => {
                 <div className="flex mt-3">
                   {index !== 0 && (
                     <Tooltip>
-                      <TooltipTrigger>
+                      <TooltipTrigger asChild>
                         <Button
                           type="button"
                           size="icon"
@@ -458,7 +596,7 @@ const CreateQuestionForm = () => {
           {/* Submit */}
           <Button disabled={isPending}>
             {isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-            Tạo câu hỏi
+            {question ? "Cập nhật câu hỏi" : "Tạo câu hỏi"}
           </Button>
         </form>
       </TooltipProvider>

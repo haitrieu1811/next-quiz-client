@@ -1,7 +1,9 @@
 import PropTypes from "prop-types";
 
-import { Separator } from "@/components/ui/separator";
 import CreateQuizForm from "@/app/(user)/create-quiz/_components/create-quiz-form";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Questions from "../_components/questions";
 
 type UpdateQuizProps = {
   params: {
@@ -23,7 +25,18 @@ const UpdateQuiz = ({ params }: UpdateQuizProps) => {
         </p>
       </div>
       <Separator className="my-6" />
-      <CreateQuizForm quiz_id={quiz_id} />
+      <Tabs defaultValue="info">
+        <TabsList>
+          <TabsTrigger value="info">Thông tin bài trắc nghiệm</TabsTrigger>
+          <TabsTrigger value="questions">Danh sách câu hỏi</TabsTrigger>
+        </TabsList>
+        <TabsContent value="info" className="py-10">
+          <CreateQuizForm quiz_id={quiz_id} />
+        </TabsContent>
+        <TabsContent value="questions" className="py-10">
+          <Questions quiz_id={quiz_id} />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

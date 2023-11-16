@@ -7,13 +7,18 @@ export type AnswerType = {
   is_correct: boolean;
 };
 
+type ImageQuestionType = {
+  _id: string;
+  url: string;
+};
+
 // Type: Question
 export type QuestionType = {
   _id: string;
   quiz_id: string;
   name: string;
   description: string;
-  images: string[];
+  images: ImageQuestionType[];
   answers: AnswerType[];
   created_at: string;
   updated_at: string;
@@ -51,5 +56,10 @@ export type UpdateQuestionResponse = SuccessResponse<{
 
 // Response: Lấy câu hỏi theo id
 export type GetQuestionResponse = SuccessResponse<{
+  question: QuestionType;
+}>;
+
+// Response: Xóa hình ảnh câu hỏi
+export type DeleteQuestionImageResponse = SuccessResponse<{
   question: QuestionType;
 }>;

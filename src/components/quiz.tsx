@@ -103,8 +103,8 @@ const Quiz = ({ className, quiz }: QuizProps) => {
           <Link href={PATH.HOME}>
             <Image
               src={quiz.thumbnail ? quiz.thumbnail : fallbackThumbnail}
-              width="150"
-              height="150"
+              width="500"
+              height="500"
               className="w-full h-40 object-cover rounded-lg"
               alt={quiz.name}
             />
