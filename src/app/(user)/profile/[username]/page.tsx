@@ -1,23 +1,13 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { MoreHorizontal } from "lucide-react";
-import Link from "next/link";
 import { Fragment, useContext, useMemo } from "react";
 
 import quizApis from "@/apis/quiz.apis";
 import userApis from "@/apis/user.apis";
 import Quiz from "@/components/quiz";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import PATH from "@/constants/path";
 import { AppContext } from "@/providers/app-provider";
 
 type ProfileProps = {
@@ -60,14 +50,14 @@ const Profile = ({ params }: ProfileProps) => {
     <Fragment>
       {user && (
         <div>
-          <div
+          {/* <div
             className="h-56 rounded-b-2xl bg-center bg-cover bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%"
             style={{
               backgroundImage: `${
                 user.cover_url ? `url(${user.cover_url})` : undefined
               }`,
             }}
-          />
+          /> */}
 
           <div className="flex justify-between items-center py-10">
             <div className="flex items-center">
@@ -88,27 +78,6 @@ const Profile = ({ params }: ProfileProps) => {
                 <div className="text-zinc-500">{user.bio}</div>
               </div>
             </div>
-            {user._id === profile?._id && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button size="icon" variant="secondary">
-                    <MoreHorizontal strokeWidth={1} />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem asChild>
-                    <Link href={PATH.CREATE_QUIZ} scroll={false}>
-                      Tạo bài trắc nghiệm
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href={PATH.CREATE_QUESTION} scroll={false}>
-                      Tạo câu hỏi
-                    </Link>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
           </div>
 
           <div className="py-10">

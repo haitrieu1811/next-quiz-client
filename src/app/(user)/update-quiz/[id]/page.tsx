@@ -15,7 +15,7 @@ const UpdateQuiz = ({ params }: UpdateQuizProps) => {
   const { id: quiz_id } = params;
 
   return (
-    <div className="py-10">
+    <div className="p-10">
       <div className="space-y-0.5">
         <h2 className="text-2xl font-bold tracking-tight">
           Cập nhật bài trắc nghiệm

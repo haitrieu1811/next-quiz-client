@@ -129,7 +129,7 @@ const Quiz = ({ className, quiz }: QuizProps) => {
           <div>
             <HoverCard>
               <HoverCardTrigger asChild>
-                <Avatar className="w-7 h-7 select-none cursor-pointer">
+                <Avatar className="w-8 h-8 select-none cursor-pointer">
                   <AvatarImage src={quiz.author.avatar} />
                   <AvatarFallback className="text-xs">
                     {quiz.author.username[0].toUpperCase()}
@@ -166,8 +166,12 @@ const Quiz = ({ className, quiz }: QuizProps) => {
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button size="icon" variant="secondary" className="w-8 h-8">
-                <MoreVertical size={14} />
+              <Button
+                size="icon"
+                variant="secondary"
+                className="w-8 h-8 rounded-full"
+              >
+                <MoreVertical size={12} />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -180,12 +184,7 @@ const Quiz = ({ className, quiz }: QuizProps) => {
               {user?._id === quiz.author._id && (
                 <Fragment>
                   <DropdownMenuItem asChild>
-                    <Link
-                      href={`${PATH.UPDATE_QUIZ}/${quiz._id}`}
-                      scroll={false}
-                    >
-                      Sửa
-                    </Link>
+                    <Link href={`${PATH.UPDATE_QUIZ}/${quiz._id}`}>Sửa</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setAlertDialogOpen(true)}>
                     Xóa
@@ -196,7 +195,6 @@ const Quiz = ({ className, quiz }: QuizProps) => {
           </DropdownMenu>
         </CardFooter>
       </Card>
-
       <AlertDialog open={alertDialogOpen} onOpenChange={setAlertDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>

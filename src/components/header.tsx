@@ -1,8 +1,6 @@
 "use client";
 
-import classNames from "classnames";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useContext } from "react";
 
 import {
@@ -21,48 +19,52 @@ import AccountDropdown from "./account-dropdown";
 import { ModeToggle } from "./mode-toggle";
 import { buttonVariants } from "./ui/button";
 
-const quizzes: { title: string; href: string; description: string }[] = [
+const createNewPages: { title: string; href: string; description: string }[] = [
   {
-    title: "Địa lý",
-    href: PATH.QUIZZES,
-    description: "Kiểm tra kiến thức về địa lý trong nươc và quốc tế của bạn.",
+    title: "Thêm mới bài trắc nghiệm",
+    href: PATH.CREATE_QUIZ,
+    description:
+      "Tạo bài trắc nghiệm với nhiều câu hỏi đóng góp cho cộng đồng.",
   },
   {
-    title: "Bóng đá",
-    href: "/docs/primitives/hover-card",
-    description:
-      "Kiểm tra kiến thức bóng đá Việt Nam và bóng đá quốc tế thông qua từng câu hỏi ở từng cấp độ từ dễ cho đến khó.",
+    title: "Thêm câu hỏi",
+    href: PATH.CREATE_QUESTION,
+    description: "Tạo câu hỏi cho bài trắc nghiệm với nhiều lựa chọn trả lời.",
   },
 ];
 
-const createNew: { title: string; href: string; description: string }[] = [
+const quizPages: { title: string; href: string; description: string }[] = [
   {
-    title: "Chủ đề",
-    href: PATH.HOME,
-    description: "Tạo chủ đề mới và chia sẻ với mọi người.",
+    title: "Bóng đá",
+    href: PATH.CREATE_QUIZ,
+    description:
+      "Tổng hợp các câu hỏi về bóng đá, giúp bạn kiểm tra kiến thức về bóng đá của mình.",
   },
   {
-    title: "Bài quiz",
-    href: PATH.HOME,
-    description:
-      "Tạo bài trắc nghiệm mới và chia sẻ với mọi người. Bạn có thể tạo bài quiz về bất kỳ chủ đề nào.",
+    title: "Địa lý",
+    href: PATH.CREATE_QUESTION,
+    description: "Tổng hợp các câu hỏi về địa lý của Việt Nam và thế giới.",
   },
   {
-    title: "Câu hỏi",
-    href: PATH.HOME,
-    description:
-      "Khi đã có bài quiz thì bạn có thể tạo câu hỏi cho bài quiz đó.",
+    title: "Lịch sử",
+    href: PATH.CREATE_QUESTION,
+    description: "Tổng hợp các câu hỏi về lịch sử của Việt Nam và thế giới.",
+  },
+  {
+    title: "Lập trình",
+    href: PATH.CREATE_QUESTION,
+    description: "Tổng hợp các câu hỏi về lập trình.",
   },
 ];
 
 const Header = () => {
-  const pathname = usePathname();
   const { isAuthenticated } = useContext(AppContext);
   const isClient = useIsClient();
 
   return (
     <header className="sticky top-0 left-0 right-0 z-10 bg-background border-b border-b-border">
-      <nav className="container py-2 flex justify-between items-center">
+      <nav className="px-6 h-14 container flex justify-between items-center">
+        {/* Logo */}
         <Link href={PATH.HOME} className="flex items-center space-x-4">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -97,41 +99,56 @@ const Header = () => {
             Nextquiz
           </span>
         </Link>
+        {/* Navigation menu */}
         <NavigationMenu>
           <NavigationMenuList>
             <NavigationMenuItem>
               <Link href={PATH.HOME} legacyBehavior passHref>
-                <NavigationMenuLink
-                  className={classNames(navigationMenuTriggerStyle(), {
-                    "text-zinc-500 dark:text-zinc-400": pathname !== PATH.HOME,
-                  })}
-                >
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   Trang chủ
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <NavigationMenuTrigger
-                className={classNames({
-                  "text-zinc-500 dark:text-zinc-400": pathname !== PATH.QUIZZES,
-                })}
-              >
-                Bài trắc nghiệm
-              </NavigationMenuTrigger>
+              <NavigationMenuTrigger>Thêm mới</NavigationMenuTrigger>
               <NavigationMenuContent>
-                <ul className="grid w-[400px] gap-3 p-3 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                  {quizzes.map((quiz) => (
-                    <li key={quiz.href}>
+                <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                  {createNewPages.map((page) => (
+                    <li>
                       <NavigationMenuLink asChild>
                         <Link
-                          href={quiz.href}
+                          href={page.href}
                           className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                         >
-                          <div className="text-sm font-semibold">
-                            {quiz.title}
+                          <div className="text-sm font-medium leading-none">
+                            {page.title}
                           </div>
-                          <p className="line-clamp-2 text-sm text-muted-foreground">
-                            {quiz.description}
+                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                            {page.description}
+                          </p>
+                        </Link>
+                      </NavigationMenuLink>
+                    </li>
+                  ))}
+                </ul>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuTrigger>Trắc nghiệm</NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                  {quizPages.map((page) => (
+                    <li>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          href={page.href}
+                          className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                        >
+                          <div className="text-sm font-medium leading-none">
+                            {page.title}
+                          </div>
+                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                            {page.description}
                           </p>
                         </Link>
                       </NavigationMenuLink>
@@ -142,48 +159,14 @@ const Header = () => {
             </NavigationMenuItem>
             <NavigationMenuItem>
               <Link href={PATH.RANKING} legacyBehavior passHref>
-                <NavigationMenuLink
-                  className={classNames(navigationMenuTriggerStyle(), {
-                    "text-zinc-500 dark:text-zinc-400":
-                      pathname !== PATH.RANKING,
-                  })}
-                >
-                  Bảng xếp hạng
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  Xếp hạng
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
-            <NavigationMenuItem>
-              <NavigationMenuTrigger
-                className={classNames({
-                  "text-zinc-500 dark:text-zinc-400": pathname !== PATH.HOME,
-                })}
-              >
-                Đóng góp
-              </NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <ul className="grid w-[400px] gap-3 p-3 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                  {createNew.map((quiz) => (
-                    <li key={quiz.href}>
-                      <NavigationMenuLink asChild>
-                        <Link
-                          href={quiz.href}
-                          className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                        >
-                          <div className="text-sm font-semibold">
-                            {quiz.title}
-                          </div>
-                          <p className="line-clamp-2 text-sm text-muted-foreground">
-                            {quiz.description}
-                          </p>
-                        </Link>
-                      </NavigationMenuLink>
-                    </li>
-                  ))}
-                </ul>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
+        {/* Actions */}
         <div className="flex items-center">
           <div className="mr-5">
             <ModeToggle />
