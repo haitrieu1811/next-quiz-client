@@ -53,7 +53,6 @@ import {
 } from "@/rules/question.rules";
 import { AnswerType } from "@/types/question.types";
 import { ErrorResponse } from "@/types/utils.types";
-import { set } from "lodash";
 
 type CreateQuestionFormProps = {
   questionId?: string;
@@ -463,7 +462,7 @@ const CreateQuestionForm = ({ questionId }: CreateQuestionFormProps) => {
                     const src = isPreview ? image : image.url;
                     const alt = isPreview ? image : image.url;
                     return (
-                      <div key={key} className="col-span-2 relative">
+                      <div key={key} className="col-span-3 relative">
                         <Image
                           src={src}
                           width={100}

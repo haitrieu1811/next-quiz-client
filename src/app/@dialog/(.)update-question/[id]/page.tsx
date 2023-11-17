@@ -1,3 +1,5 @@
+import { Fragment } from "react";
+
 import { Separator } from "@/components/ui/separator";
 import CreateQuestionForm from "@/app/(user)/create-question/_components/create-question-form";
 
@@ -10,7 +12,7 @@ type UpdateQuestionProps = {
 const UpdateQuestion = ({ params }: UpdateQuestionProps) => {
   const { id: questionId } = params;
   return (
-    <div className="py-10">
+    <Fragment>
       <div className="space-y-0.5">
         <h2 className="text-2xl font-bold tracking-tight">Cập nhật câu hỏi</h2>
         <p className="text-muted-foreground">
@@ -19,7 +21,7 @@ const UpdateQuestion = ({ params }: UpdateQuestionProps) => {
       </div>
       <Separator className="my-6" />
       <CreateQuestionForm questionId={questionId} />
-    </div>
+    </Fragment>
   );
 };
 
