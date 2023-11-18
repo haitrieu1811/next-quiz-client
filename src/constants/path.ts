@@ -10,12 +10,13 @@ const PATH = {
   QUIZZES: "/quizzes",
   RANKING: "/ranking",
   DASHBOARD: "/dashboard",
-
+  MY_QUIZZES: "/my-quizzes",
   CREATE_QUIZ: "/create-quiz",
   CREATE_QUESTION: "/create-question",
   CREATE_TOPIC: "/create-topic",
   UPDATE_QUIZ: "/update-quiz",
   UPDATE_QUESTION: "/update-question",
+  HISTORY: "/history",
 } as const;
 
 export default PATH;

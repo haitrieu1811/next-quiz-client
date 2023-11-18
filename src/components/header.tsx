@@ -62,7 +62,7 @@ const Header = () => {
   const isClient = useIsClient();
 
   return (
-    <header className="sticky top-0 left-0 right-0 z-10 bg-background border-b border-b-border">
+    <header className="sticky top-0 left-0 right-0 z-10 bg-background border-b">
       <nav className="px-6 h-14 container flex justify-between items-center">
         {/* Logo */}
         <Link href={PATH.HOME} className="flex items-center space-x-4">

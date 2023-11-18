@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { LogOut } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useContext } from "react";
+import Link from "next/link";
+import { useContext, useMemo } from "react";
 
 import userApis from "@/apis/user.apis";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -18,9 +18,35 @@ import { AppContext } from "@/providers/app-provider";
 import { useToast } from "./ui/use-toast";
 
 const AccountDropdown = () => {
-  const router = useRouter();
   const { setIsAuthenticated, setUser, user } = useContext(AppContext);
   const { toast } = useToast();
+
+  // Paths
+  const paths = useMemo(
+    () => [
+      {
+        name: "Trang cá nhân",
+        path: `${PATH.PROFILE}/${user?.username}`,
+      },
+      {
+        name: "Cài đặt",
+        path: PATH.SETTING,
+      },
+      {
+        name: "Đổi mật khẩu",
+        path: PATH.SETTING_CHANGE_PASSWORD,
+      },
+      {
+        name: "Lịch sử trả lời",
+        path: PATH.HISTORY,
+      },
+      {
+        name: "Bài trắc nghiệm của tôi",
+        path: PATH.MY_QUIZZES,
+      },
+    ],
+    [user?.username]
+  );
 
   // Mutation: Đăng xuất
   const logoutMutation = useMutation({
@@ -65,33 +91,11 @@ const AccountDropdown = () => {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={() => router.push(`${PATH.PROFILE}/${user?.username}`)}
-          className="cursor-pointer"
-        >
-          Trang cá nhân
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => router.push(PATH.SETTING)}
-          className="cursor-pointer"
-        >
-          Cài đặt
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => router.push(PATH.SETTING_CHANGE_PASSWORD)}
-          className="cursor-pointer"
-        >
-          Đổi mật khẩu
-        </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer">
-          Lịch sử trả lời
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => router.push(PATH.DASHBOARD)}
-          className="cursor-pointer"
-        >
-          Dashboard
-        </DropdownMenuItem>
+        {paths.map((path) => (
+          <DropdownMenuItem key={path.path} asChild className="cursor-pointer">
+            <Link href={path.path}>{path.name}</Link>
+          </DropdownMenuItem>
+        ))}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={logout} className="cursor-pointer">
           <LogOut width={15} className="mr-3" /> Đăng xuất
