@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CaretSortIcon } from "@radix-ui/react-icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import isUndefined from "lodash/isUndefined";
 import omitBy from "lodash/omitBy";
@@ -46,10 +47,9 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { QuizLevel } from "@/constants/enum";
+import { QUIZZES_MESSAGES } from "@/constants/messages";
 import { cn } from "@/lib/utils";
 import { CreateQuizSchema, createQuizSchema } from "@/rules/quiz.rules";
-import { CaretSortIcon } from "@radix-ui/react-icons";
-import { QUIZZES_MESSAGES } from "@/constants/messages";
 
 const quizLevels = [
   { value: QuizLevel.Easy, label: "Dễ" },
@@ -59,10 +59,10 @@ const quizLevels = [
 ] as const;
 
 type CreateQuizFormProps = {
-  quiz_id?: string;
+  quizId?: string;
 };
 
-const CreateQuizForm = ({ quiz_id }: CreateQuizFormProps) => {
+const CreateQuizForm = ({ quizId }: CreateQuizFormProps) => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
@@ -70,9 +70,9 @@ const CreateQuizForm = ({ quiz_id }: CreateQuizFormProps) => {
 
   // Query: Lấy thông tin quiz (ở chế độ chỉnh sửa)
   const getQuizQuery = useQuery({
-    queryKey: ["get-quiz", quiz_id],
-    queryFn: () => quizApis.getQuiz(quiz_id as string),
-    enabled: !!quiz_id,
+    queryKey: ["get-quiz", quizId],
+    queryFn: () => quizApis.getQuiz(quizId as string),
+    enabled: !!quizId,
   });
 
   // Thông tin quiz (ở chế độ chỉnh sửa)

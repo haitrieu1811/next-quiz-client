@@ -4,15 +4,17 @@ import CreateQuizForm from "@/app/(user)/create-quiz/_components/create-quiz-for
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Questions from "../_components/questions";
+import { getIdFromNameId } from "@/lib/utils";
 
 type UpdateQuizProps = {
   params: {
-    id: string;
+    nameId: string;
   };
 };
 
 const UpdateQuiz = ({ params }: UpdateQuizProps) => {
-  const { id: quiz_id } = params;
+  const { nameId } = params;
+  const quizId = getIdFromNameId(nameId);
 
   return (
     <div className="p-10">
@@ -31,10 +33,10 @@ const UpdateQuiz = ({ params }: UpdateQuizProps) => {
           <TabsTrigger value="questions">Danh sách câu hỏi</TabsTrigger>
         </TabsList>
         <TabsContent value="info" className="py-10">
-          <CreateQuizForm quiz_id={quiz_id} />
+          <CreateQuizForm quizId={quizId} />
         </TabsContent>
         <TabsContent value="questions" className="py-10">
-          <Questions quiz_id={quiz_id} />
+          <Questions quizId={quizId} />
         </TabsContent>
       </Tabs>
     </div>

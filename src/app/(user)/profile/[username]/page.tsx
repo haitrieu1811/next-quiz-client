@@ -50,14 +50,14 @@ const Profile = ({ params }: ProfileProps) => {
     <Fragment>
       {user && (
         <div>
-          {/* <div
+          <div
             className="h-56 rounded-b-2xl bg-center bg-cover bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%"
             style={{
               backgroundImage: `${
                 user.cover_url ? `url(${user.cover_url})` : undefined
               }`,
             }}
-          /> */}
+          />
 
           <div className="flex justify-between items-center py-10">
             <div className="flex items-center">

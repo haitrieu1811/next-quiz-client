@@ -3,6 +3,7 @@ import { CalendarIcon, Loader2, MoreVertical } from "lucide-react";
 import moment from "moment";
 import Link from "next/link";
 import { Fragment, useContext, useState } from "react";
+import Image from "next/image";
 
 import quizApis from "@/apis/quiz.apis";
 import {
@@ -45,7 +46,7 @@ import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { useToast } from "./ui/use-toast";
 import fallbackThumbnail from "@/assets/images/quiz-example.jpg";
-import Image from "next/image";
+import { generateNameId } from "@/lib/utils";
 
 interface QuizProps {
   className?: string;
@@ -100,7 +101,12 @@ const Quiz = ({ className, quiz }: QuizProps) => {
     <Fragment>
       <Card className={className}>
         <CardHeader className="p-4">
-          <Link href={PATH.HOME}>
+          <Link
+            href={`${PATH.PLAY}/${generateNameId({
+              name: quiz.name,
+              id: quiz._id,
+            })}`}
+          >
             <Image
               src={quiz.thumbnail ? quiz.thumbnail : fallbackThumbnail}
               width="500"
@@ -111,14 +117,16 @@ const Quiz = ({ className, quiz }: QuizProps) => {
           </Link>
         </CardHeader>
         <CardContent className="px-4">
-          <CardTitle className="mb-2">
-            <Link href={PATH.HOME}>
+          <CardTitle className="mb-4">
+            <Link
+              href={`${PATH.PLAY}/${generateNameId({
+                name: quiz.name,
+                id: quiz._id,
+              })}`}
+            >
               <span className="line-clamp-1">{quiz.name}</span>
             </Link>
           </CardTitle>
-          <CardDescription className="min-h-[20px] mb-2 line-clamp-1">
-            {quiz.description}
-          </CardDescription>
           <Badge
             className={`text-white ${levels[quiz.level as QuizLevel].color}`}
           >
@@ -184,7 +192,14 @@ const Quiz = ({ className, quiz }: QuizProps) => {
               {user?._id === quiz.author._id && (
                 <Fragment>
                   <DropdownMenuItem asChild>
-                    <Link href={`${PATH.UPDATE_QUIZ}/${quiz._id}`}>Sửa</Link>
+                    <Link
+                      href={`${PATH.UPDATE_QUIZ}/${generateNameId({
+                        name: quiz.name,
+                        id: quiz._id,
+                      })}`}
+                    >
+                      Cập nhật
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setAlertDialogOpen(true)}>
                     Xóa

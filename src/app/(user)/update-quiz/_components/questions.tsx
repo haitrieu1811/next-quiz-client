@@ -8,14 +8,14 @@ import { columns } from "./columns";
 import DataTable from "./data-table";
 
 type QuestionsProps = {
-  quiz_id: string;
+  quizId: string;
 };
 
-const Questions = ({ quiz_id }: QuestionsProps) => {
+const Questions = ({ quizId }: QuestionsProps) => {
   // Query: Lấy danh sách câu hỏi của bài quiz
   const getQuestionsQuery = useQuery({
-    queryKey: ["questions", quiz_id],
-    queryFn: () => questionApis.getQuestionsByQuizId({ quiz_id }),
+    queryKey: ["questions", quizId],
+    queryFn: () => questionApis.getQuestionsByQuizId({ quiz_id: quizId }),
   });
 
   // Danh sách câu hỏi
