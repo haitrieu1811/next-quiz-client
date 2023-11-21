@@ -2,6 +2,7 @@ import { PaginationType, SuccessResponse } from "./utils.types";
 
 // Type: Answer
 export type AnswerType = {
+  _id: string;
   name: string;
   description: string;
   is_correct: boolean;

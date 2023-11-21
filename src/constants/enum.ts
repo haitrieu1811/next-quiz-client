@@ -94,3 +94,13 @@ export enum QuizLevel {
   Hard,
   VeryHard,
 }
+
+export enum QuizAudience {
+  Everyone,
+  OnlyMe,
+}
+
+export enum QuestionAudience {
+  Everyone,
+  OnlyMe,
+}

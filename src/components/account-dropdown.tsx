@@ -41,8 +41,8 @@ const AccountDropdown = () => {
         path: PATH.HISTORY,
       },
       {
-        name: "Bài trắc nghiệm của tôi",
-        path: PATH.MY_QUIZZES,
+        name: "Dashboard",
+        path: PATH.DASHBOARD,
       },
     ],
     [user?.username]

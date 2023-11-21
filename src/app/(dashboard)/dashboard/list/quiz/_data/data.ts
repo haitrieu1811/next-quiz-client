@@ -35,21 +35,6 @@ export const statuses = [
     label: "Todo",
     icon: CircleIcon,
   },
-  {
-    value: "in progress",
-    label: "In Progress",
-    icon: StopwatchIcon,
-  },
-  {
-    value: "done",
-    label: "Done",
-    icon: CheckCircledIcon,
-  },
-  {
-    value: "canceled",
-    label: "Canceled",
-    icon: CrossCircledIcon,
-  },
 ];
 
 export const priorities = [

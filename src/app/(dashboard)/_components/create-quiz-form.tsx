@@ -46,7 +46,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { QuizLevel } from "@/constants/enum";
+import { QuizAudience, QuizLevel } from "@/constants/enum";
 import { QUIZZES_MESSAGES } from "@/constants/messages";
 import { cn } from "@/lib/utils";
 import { CreateQuizSchema, createQuizSchema } from "@/rules/quiz.rules";
@@ -123,6 +123,7 @@ const CreateQuizForm = ({ quizId }: CreateQuizFormProps) => {
       description: "",
       topic_id: "",
       level: String(QuizLevel.Easy),
+      audience: String(QuizAudience.Everyone),
     },
   });
 
@@ -133,6 +134,7 @@ const CreateQuizForm = ({ quizId }: CreateQuizFormProps) => {
     form.setValue("description", quiz.description);
     form.setValue("topic_id", quiz.topic._id);
     form.setValue("level", String(quiz.level));
+    form.setValue("audience", String(quiz.audience));
   }, [quiz]);
 
   // Mutation: Upload ảnh
@@ -178,6 +180,7 @@ const CreateQuizForm = ({ quizId }: CreateQuizFormProps) => {
     const body = {
       ...data,
       level: Number(data.level),
+      audience: Number(data.audience),
     };
     if (thumbnailFile) {
       const formData = new FormData();
@@ -203,84 +206,7 @@ const CreateQuizForm = ({ quizId }: CreateQuizFormProps) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={onSubmit} className="space-y-8">
-        {/* Tên */}
-        <FormField
-          control={form.control}
-          name="name"
-          disabled={isLoading}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Tên</FormLabel>
-              <FormControl>
-                <Input type="text" placeholder="Tên bài quiz" {...field} />
-              </FormControl>
-              <FormDescription>
-                Tên bài quiz phải có ít nhất 5 kí tự.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Mô tả */}
-        <FormField
-          control={form.control}
-          name="description"
-          disabled={isLoading}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Mô tả</FormLabel>
-              <FormControl>
-                <Textarea
-                  rows={5}
-                  className="resize-none"
-                  placeholder="Mô tả bài quiz"
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>
-                Mô tả bài quiz phải có ít nhất 10 kí tự.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Độ khó */}
-        <FormField
-          control={form.control}
-          name="level"
-          disabled={isLoading}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Độ khó</FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                value={String(field.value)}
-              >
-                <FormControl>
-                  <SelectTrigger className="w-[200px]">
-                    <SelectValue placeholder="Chọn độ khó" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {quizLevels.map((level) => (
-                    <SelectItem key={level.value} value={String(level.value)}>
-                      {level.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormDescription>
-                Độ khó của bài quiz phải được xác định. Hãy chọn độ khó phù hợp
-                với bài quiz của bạn.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
+      <form onSubmit={onSubmit} className="space-y-10">
         {/* Chủ đề */}
         <FormField
           control={form.control}
@@ -312,7 +238,7 @@ const CreateQuizForm = ({ quizId }: CreateQuizFormProps) => {
                 <PopoverContent className="w-[200px] p-0">
                   <Command>
                     <CommandInput
-                      placeholder="Search chủ đề..."
+                      placeholder="Tìm kiếm chủ đề..."
                       className="h-9"
                     />
                     <CommandEmpty>Không tìm thấy chủ đề.</CommandEmpty>
@@ -341,8 +267,118 @@ const CreateQuizForm = ({ quizId }: CreateQuizFormProps) => {
                 </PopoverContent>
               </Popover>
               <FormDescription>
-                Chủ đề của bài quiz phải được xác định. Hãy chọn chủ đề phù hợp
-                với bài quiz của bạn.
+                Chủ đề của bài trắc nghiệm phải được xác định. Hãy chọn chủ đề
+                phù hợp với bài trắc nghiệm của bạn.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Độ khó */}
+        <FormField
+          control={form.control}
+          name="level"
+          disabled={isLoading}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Độ khó</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue placeholder="Chọn độ khó" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {quizLevels.map((level) => (
+                    <SelectItem key={level.value} value={String(level.value)}>
+                      {level.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormDescription>
+                Độ khó của bài trắc nghiệm phải được xác định. Hãy chọn độ khó
+                phù hợp với bài trắc nghiệm của bạn.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Người xem */}
+        <FormField
+          control={form.control}
+          name="audience"
+          disabled={isLoading}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Người xem</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue placeholder="Chọn đối tượng" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value={String(QuizAudience.Everyone)}>
+                    Mọi người
+                  </SelectItem>
+                  <SelectItem value={String(QuizAudience.OnlyMe)}>
+                    Chỉ mình tôi
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+              <FormDescription>
+                Đối tượng xem bài trắc nghiệm phải được xác định. Hãy chọn đối
+                tượng xem phù hợp với bài trắc nghiệm của bạn.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Tên */}
+        <FormField
+          control={form.control}
+          name="name"
+          disabled={isLoading}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Tên</FormLabel>
+              <FormControl>
+                <Input
+                  type="text"
+                  placeholder="Tên bài trắc nghiệm"
+                  {...field}
+                />
+              </FormControl>
+              <FormDescription>
+                Tên bài trắc nghiệm nên dễ hiểu và ngắn gọn.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Mô tả */}
+        <FormField
+          control={form.control}
+          name="description"
+          disabled={isLoading}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Mô tả</FormLabel>
+              <FormControl>
+                <Textarea
+                  rows={8}
+                  className="resize-none"
+                  placeholder="Mô tả bài trắc nghiệm"
+                  {...field}
+                />
+              </FormControl>
+              <FormDescription>
+                Mô tả bài trắc nghiệm nên xúc tích và dễ hiểu.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -384,8 +420,9 @@ const CreateQuizForm = ({ quizId }: CreateQuizFormProps) => {
                 />
               </FormControl>
               <FormDescription>
-                Hình ảnh bài quiz phải được xác định. Hãy chọn hình ảnh phù hợp
-                với bài quiz của bạn.
+                Ảnh đại diện cho bài trắc nghiệm. Hãy chọn ảnh đại diện phù hợp
+                với bài trắc nghiệm của bạn. Ảnh đại diện phải có định dạng
+                .jpg, .jpeg, .png và kích thước không quá 300KB.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -395,7 +432,7 @@ const CreateQuizForm = ({ quizId }: CreateQuizFormProps) => {
         {/* Submit */}
         <Button type="submit" disabled={isLoading}>
           {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-          {quiz ? "Cập nhật bài trắc nghiệm" : "Tạo quiz"}
+          {quiz ? "Cập nhật bài trắc nghiệm" : "Tạo bài trắc nghiệm"}
         </Button>
       </form>
     </Form>

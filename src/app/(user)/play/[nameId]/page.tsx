@@ -4,20 +4,20 @@ import { useQuery } from "@tanstack/react-query";
 import classNames from "classnames";
 import { CheckCheck, HelpCircle, MoveLeft, MoveRight } from "lucide-react";
 import Image from "next/image";
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import questionApis from "@/apis/question.apis";
 import quizApis from "@/apis/quiz.apis";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
-import { getIdFromNameId } from "@/lib/utils";
 import {
-  TooltipProvider,
-  TooltipTrigger,
   Tooltip,
   TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { getIdFromNameId } from "@/lib/utils";
 
 type PlayProps = {
   params: {
@@ -111,7 +111,8 @@ const Play = ({ params }: PlayProps) => {
           )}
           <Separator className="my-10" />
           <div className="grid grid-cols-12 gap-12">
-            <div className="col-span-8">
+            <div className="col-span-3"></div>
+            <div className="col-span-6">
               <div>
                 <div className="grid grid-cols-12 gap-3 mb-5">
                   {currentQuestion?.images?.length > 0 &&
@@ -126,8 +127,14 @@ const Play = ({ params }: PlayProps) => {
                       />
                     ))}
                 </div>
-                <h3 className="font-medium">
+                <h3 className="font-medium text-lg text-center">
                   Câu {currentQuestionIndex + 1}: {currentQuestion?.name}
+                  <Tooltip>
+                    <TooltipTrigger className="ml-2">
+                      <HelpCircle size={18} />
+                    </TooltipTrigger>
+                    <TooltipContent>{currentQuestion?.name}</TooltipContent>
+                  </Tooltip>
                 </h3>
               </div>
               <form action="">
@@ -138,12 +145,12 @@ const Play = ({ params }: PlayProps) => {
                         <input
                           type="radio"
                           name="answer"
-                          id={`answer-${index}`}
+                          id={`answer-${answer._id}`}
                           className="peer appearance-none hidden"
                         />
                         <label
                           htmlFor={`answer-${index}`}
-                          className="flex items-center border rounded-lg p-4 cursor-pointer text-muted-foreground peer-checked:border-muted-foreground"
+                          className="flex items-center border-[2px] rounded-lg p-4 cursor-pointer text-secondary-foreground peer-checked:border-muted-foreground"
                         >
                           {answer.name}{" "}
                           {answer.description && (
@@ -192,31 +199,53 @@ const Play = ({ params }: PlayProps) => {
                       <MoveRight size={16} />
                     </Button>
                   </div>
-                  <Button>
+                  <Button className="bg-green-600 hover:bg-green-700 text-white">
                     <span className="text-sm mr-3">Nộp bài</span>
                     <CheckCheck size={16} />
                   </Button>
                 </div>
               </form>
             </div>
-            <div className="col-span-4">
-              <div className="grid grid-cols-12 gap-4">
+            <div className="col-span-3">
+              <div className="grid grid-cols-12 gap-3">
                 {Array(questionsCount)
                   .fill(0)
                   .map((_, index) => (
-                    <Button
-                      key={index}
-                      variant="outline"
-                      onClick={() => handleChangeQuestion(index)}
-                      className={classNames({
-                        "col-span-2": true,
-                        "bg-foreground text-muted":
-                          index === currentQuestionIndex,
-                      })}
-                    >
-                      <span className="text-sm">{index + 1}</span>
-                    </Button>
+                    <div key={index} className="col-span-3">
+                      <Button
+                        variant="outline"
+                        onClick={() => handleChangeQuestion(index)}
+                        className={classNames({
+                          "w-10 h-10 rounded-full px-0": true,
+                          "bg-foreground text-muted":
+                            index === currentQuestionIndex,
+                        })}
+                      >
+                        <span className="text-sm">{index + 1}</span>
+                      </Button>
+                    </div>
                   ))}
+              </div>
+              <Separator className="my-10" />
+              <div className="space-y-3">
+                <div className="flex justify-end items-center">
+                  <span className="text-sm text-muted-foreground mr-4">
+                    Chưa chọn đáp án
+                  </span>
+                  <div className="w-4 h-4 rounded-full border border-border bg-background" />
+                </div>
+                <div className="flex justify-end items-center">
+                  <span className="text-sm text-muted-foreground mr-4">
+                    Đã chọn đáp án
+                  </span>
+                  <div className="w-4 h-4 rounded-full bg-green-600" />
+                </div>
+                <div className="flex justify-end items-center">
+                  <span className="text-sm text-muted-foreground mr-4">
+                    Câu hỏi hiện tại
+                  </span>
+                  <div className="w-4 h-4 rounded-full bg-foreground" />
+                </div>
               </div>
             </div>
           </div>

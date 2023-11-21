@@ -16,7 +16,10 @@ export const metadata: Metadata = {
 // Simulate a database read for tasks.
 async function getTasks() {
   const data = await fs.readFile(
-    path.join(process.cwd(), "src/app/(user)/my-quizzes/_data/tasks.json")
+    path.join(
+      process.cwd(),
+      "src/app/(dashboard)/dashboard/list/quiz/_data/tasks.json"
+    )
   );
 
   const tasks = JSON.parse(data.toString());
@@ -28,7 +31,7 @@ export default async function MyQuizzes() {
   const tasks = await getTasks();
 
   return (
-    <div className="hidden h-full flex-1 flex-col space-y-8 py-10 md:flex">
+    <div className="hidden h-full flex-1 flex-col space-y-8 p-10 md:flex">
       <div className="space-y-8">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">

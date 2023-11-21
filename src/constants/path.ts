@@ -9,8 +9,9 @@ const PATH = {
   SETTING_CHANGE_PASSWORD: "/setting/change-password",
   QUIZZES: "/quizzes",
   RANKING: "/ranking",
-  DASHBOARD: "/dashboard",
   MY_QUIZZES: "/my-quizzes",
+
+  DASHBOARD: "/dashboard",
   CREATE_QUIZ: "/create-quiz",
   CREATE_QUESTION: "/create-question",
   CREATE_TOPIC: "/create-topic",
@@ -18,6 +19,18 @@ const PATH = {
   UPDATE_QUESTION: "/update-question",
   HISTORY: "/history",
   PLAY: "/play",
+  DASHBOARD_CREATE_QUIZ: "/dashboard/create/quiz",
+  DASHBOARD_CREATE_QUESTION: "/dashboard/create/question",
+  DASHBOARD_CREATE_TOPIC: "/dashboard/create/topic",
+  DASHBOARD_UPDATE_QUIZ: "/dashboard/update/quiz",
+  DASHBOARD_UPDATE_QUESTION: "/dashboard/update/question",
+  DASHBOARD_HISTORY: "/dashboard/history",
+  DASHBOARD_LIST_QUIZ: "/dashboard/list/quiz",
+  DASHBOARD_LIST_QUESTION: "/dashboard/list/question",
+  DASHBOARD_LIST_TOPIC: "/dashboard/list/topic",
+  DASHBOARD_LIST_USER: "/dashboard/list/user",
+  DASHBOARD_LIST_HISTORY: "/dashboard/list/history",
+  DASHBOARD_LIST_RANKING: "/dashboard/list/ranking",
 } as const;
 
 export default PATH;

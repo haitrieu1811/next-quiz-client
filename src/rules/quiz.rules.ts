@@ -19,6 +19,7 @@ export const createQuizSchema = z
       message: QUIZZES_MESSAGES.QUIZ_TOPIC_IS_REQUIRED,
     }),
     thumbnail: z.string().optional(),
+    audience: z.string().optional(),
   })
   .refine(
     (data) => {

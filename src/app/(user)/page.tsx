@@ -21,7 +21,7 @@ const Home = () => {
   );
 
   return (
-    <div className="grid grid-cols-12 gap-5 py-6">
+    <div className="grid grid-cols-12 gap-6 py-6">
       {/* Danh sách bài trắc nghiệm */}
       {!getQuizzesQuery.isPending &&
         quizzes.map((quiz) => (

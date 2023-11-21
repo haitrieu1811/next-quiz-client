@@ -16,6 +16,7 @@ import PATH from "@/constants/path";
 import useIsClient from "@/hooks/useIsClient";
 import { AppContext } from "@/providers/app-provider";
 import AccountDropdown from "./account-dropdown";
+import BrandLogo from "./brand-logo";
 import { ModeToggle } from "./mode-toggle";
 import { buttonVariants } from "./ui/button";
 
@@ -65,40 +66,7 @@ const Header = () => {
     <header className="sticky top-0 left-0 right-0 z-10 bg-background border-b">
       <nav className="px-6 h-14 container flex justify-between items-center">
         {/* Logo */}
-        <Link href={PATH.HOME} className="flex items-center space-x-4">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 256 256"
-            className="h-6 w-6"
-          >
-            <rect width={256} height={256} fill="none" />
-            <line
-              x1={208}
-              y1={128}
-              x2={128}
-              y2={208}
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={16}
-            />
-            <line
-              x1={192}
-              y1={40}
-              x2={40}
-              y2={192}
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={16}
-            />
-          </svg>
-          <span className="font-bold tracking-tight text-lg flex items-center lowercase">
-            Nextquiz
-          </span>
-        </Link>
+        <BrandLogo />
         {/* Navigation menu */}
         <NavigationMenu>
           <NavigationMenuList>
@@ -167,10 +135,8 @@ const Header = () => {
           </NavigationMenuList>
         </NavigationMenu>
         {/* Actions */}
-        <div className="flex items-center">
-          <div className="mr-5">
-            <ModeToggle />
-          </div>
+        <div className="flex items-center space-x-5">
+          <ModeToggle />
           {isAuthenticated && isClient && <AccountDropdown />}
           {!isAuthenticated && isClient && (
             <Link

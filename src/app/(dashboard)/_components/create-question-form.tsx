@@ -137,6 +137,7 @@ const CreateQuestionForm = ({ questionId }: CreateQuestionFormProps) => {
 
   // Mutation: Tạo câu hỏi
   const createQuestionMutation = useMutation({
+    mutationKey: ["create-question"],
     mutationFn: questionApis.createQuestion,
     onSuccess: () => {
       form.reset();
@@ -175,6 +176,7 @@ const CreateQuestionForm = ({ questionId }: CreateQuestionFormProps) => {
 
   // Mutation: Cập nhật câu hỏi
   const updateQuestionMutation = useMutation({
+    mutationKey: ["update-question"],
     mutationFn: questionApis.updateQuestion,
   });
 
@@ -211,6 +213,7 @@ const CreateQuestionForm = ({ questionId }: CreateQuestionFormProps) => {
 
   // Mutation: Xóa hình ảnh
   const deleteImageMutation = useMutation({
+    mutationKey: ["delete-image"],
     mutationFn: imageApis.delete,
     onSuccess: () => {
       getQuestionQuery.refetch();
@@ -219,6 +222,7 @@ const CreateQuestionForm = ({ questionId }: CreateQuestionFormProps) => {
 
   // Mutation: Xóa hình ảnh của câu hỏi
   const deleteQuestionImageMutation = useMutation({
+    mutationKey: ["delete-question-image"],
     mutationFn: questionApis.deleteQuestionImage,
     onSuccess: () => {
       toast({
@@ -260,6 +264,7 @@ const CreateQuestionForm = ({ questionId }: CreateQuestionFormProps) => {
 
   // Mutation: Upload hình ảnh
   const uploadImagesMutation = useMutation({
+    mutationKey: ["upload-images"],
     mutationFn: imageApis.upload,
   });
 

@@ -1,5 +1,5 @@
 import { Separator } from "@/components/ui/separator";
-import CreateQuizForm from "./_components/create-quiz-form";
+import CreateQuizForm from "@/app/(dashboard)/_components/create-quiz-form";
 
 const CreateQuiz = () => {
   return (

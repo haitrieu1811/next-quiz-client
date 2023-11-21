@@ -1,10 +1,16 @@
-import { QuizLevel, UserGender, UserRole, UserStatus } from "@/constants/enum";
+import {
+  QuizAudience,
+  QuizLevel,
+  UserGender,
+  UserRole,
+  UserStatus,
+} from "@/constants/enum";
+import { TopicType } from "./topic.types";
 import {
   PaginationReqQuery,
   PaginationType,
   SuccessResponse,
 } from "./utils.types";
-import { TopicType } from "./topic.types";
 
 // Type: Tác giả của quiz
 export type QuizAuthorType = {
@@ -33,6 +39,7 @@ export type QuizType = {
   level: number;
   author: QuizAuthorType;
   topic: TopicType;
+  audience: QuizAudience;
   created_at: string;
   updated_at: string;
 };
