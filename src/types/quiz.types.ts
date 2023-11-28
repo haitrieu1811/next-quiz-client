@@ -58,7 +58,6 @@ export type GetQuizzesReqQuery = PaginationReqQuery & {
   name?: string;
   level?: number;
   topic?: string;
-  user_id?: string;
 };
 
 // Request: Cập nhật thông tin một quiz

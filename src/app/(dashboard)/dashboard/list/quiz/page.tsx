@@ -1,49 +1,36 @@
-import { promises as fs } from "fs";
 import { Metadata } from "next";
-import path from "path";
-import { z } from "zod";
+import Link from "next/link";
 
-import { columns } from "./_components/columns";
-import { DataTable } from "./_components/data-table";
-import { taskSchema } from "./_data/schema";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import PATH from "@/constants/path";
+import QuizzesTable from "./quizzes-table";
 
 export const metadata: Metadata = {
-  title: "Tasks",
-  description: "A task and issue tracker build using Tanstack Table.",
+  title: "Danh sách bài trắc nghiệm",
+  description: "Quản lý bài trắc nghiệm của bạn",
 };
 
-// Simulate a database read for tasks.
-async function getTasks() {
-  const data = await fs.readFile(
-    path.join(
-      process.cwd(),
-      "src/app/(dashboard)/dashboard/list/quiz/_data/tasks.json"
-    )
-  );
-
-  const tasks = JSON.parse(data.toString());
-
-  return z.array(taskSchema).parse(tasks);
-}
-
-export default async function MyQuizzes() {
-  const tasks = await getTasks();
-
+const MyQuizzes = () => {
   return (
-    <div className="hidden h-full flex-1 flex-col space-y-8 p-10 md:flex">
-      <div className="space-y-8">
+    <div className="p-10">
+      <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">
-            Bài trắc nghiệm của bạn
-          </h2>
+          <h1 className="text-2xl font-bold tracking-tight">
+            Danh sách bài trắc nghiệm
+          </h1>
           <p className="text-muted-foreground">
-            Quản lý bài trắc nghiệm của bạn.
+            Danh sách bài trắc nghiệm của bạn
           </p>
         </div>
-        <Separator />
+        <Button asChild>
+          <Link href={PATH.DASHBOARD_CREATE_QUIZ}>Thêm bài trắc nghiệm</Link>
+        </Button>
       </div>
-      <DataTable data={tasks} columns={columns} />
+      <Separator className="my-6" />
+      <QuizzesTable />
     </div>
   );
-}
+};
+
+export default MyQuizzes;

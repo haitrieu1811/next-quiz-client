@@ -41,6 +41,16 @@ const quizApis = {
   deleteQuiz(quiz_id: string) {
     return http.delete<OnlyMessageResponse>(`/quizzes/${quiz_id}`);
   },
+
+  // Lấy danh sách bài trắc nghiệm public
+  getPublicQuizzes(params?: GetQuizzesReqQuery) {
+    return http.get<GetQuizzesResponse>("/quizzes/public", { params });
+  },
+
+  // Lấy danh sách bài trắc nghiệm của user
+  getUserQuizzes(params?: GetQuizzesReqQuery) {
+    return http.get<GetQuizzesResponse>("/quizzes/logged-user", { params });
+  },
 };
 
 export default quizApis;
