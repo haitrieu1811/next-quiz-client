@@ -9,7 +9,7 @@ const DialogLayout = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   return (
     <Dialog defaultOpen onOpenChange={() => router.back()}>
-      <DialogContent className="overflow-y-auto max-w-3xl max-h-[90vh]">
+      <DialogContent className="overflow-y-auto max-h-[90vh]">
         {children}
       </DialogContent>
     </Dialog>

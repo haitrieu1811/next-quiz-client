@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 
+import CreateQuestionForm from "@/app/(dashboard)/_components/create-question-form";
 import { Separator } from "@/components/ui/separator";
-import CreateQuestionForm from "@/app/(user)/create-question/_components/create-question-form";
 
 type UpdateQuestionProps = {
   params: {

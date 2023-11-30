@@ -1,10 +1,24 @@
 "use client";
 
 import { DotsHorizontalIcon, TimerIcon } from "@radix-ui/react-icons";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Lock, Users } from "lucide-react";
+import { ArrowUpDown, Loader2, Lock, Users } from "lucide-react";
 import moment from "moment";
+import Link from "next/link";
+import { Fragment, useState } from "react";
 
+import quizApis from "@/apis/quiz.apis";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -15,8 +29,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useToast } from "@/components/ui/use-toast";
 import { QuizAudience, QuizLevel } from "@/constants/enum";
-import { convertMomentToVietnamese } from "@/lib/utils";
+import PATH from "@/constants/path";
+import { convertMomentToVietnamese, generateNameId } from "@/lib/utils";
 import { QuizType } from "@/types/quiz.types";
 
 const badgeLevel = (level: QuizLevel) => {
@@ -180,25 +196,93 @@ export const columns: ColumnDef<QuizType>[] = [
   },
   {
     id: "actions",
-    cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
-          >
-            <DotsHorizontalIcon className="h-4 w-4" />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem>Cập nhật</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem className="text-red-500 dark:text-red-600">
-            Xóa
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
+    cell: ({ row }) => {
+      const { _id, name } = row.original;
+      const { toast } = useToast();
+      const queryClient = useQueryClient();
+      const [alertDialogOpen, setAlertDialogOpen] = useState<boolean>(false);
+
+      // Mutation: Xóa quiz theo id
+      const deleteQuizMutation = useMutation({
+        mutationFn: quizApis.deleteQuiz,
+        onSuccess: () => {
+          toast({
+            title: "Xóa quiz thành công",
+            description: "Quiz đã được xóa khỏi hệ thống",
+          });
+          queryClient.invalidateQueries({
+            queryKey: ["get-quizzes-dashboard"],
+          });
+        },
+      });
+
+      // Handle: Xóa quiz
+      const handleDelete = () => {
+        deleteQuizMutation.mutate(_id);
+      };
+
+      return (
+        <Fragment>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+              >
+                <DotsHorizontalIcon className="h-4 w-4" />
+                <span className="sr-only">Open menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-32">
+              <DropdownMenuItem asChild>
+                <Link
+                  href={`${PATH.DASHBOARD_UPDATE_QUIZ}/${generateNameId({
+                    name,
+                    id: _id,
+                  })}`}
+                >
+                  Cập nhật
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="text-red-500 dark:text-red-600"
+                onClick={() => setAlertDialogOpen(true)}
+              >
+                Xóa
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <AlertDialog open={alertDialogOpen} onOpenChange={setAlertDialogOpen}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  Bạn có chắc muốn xóa bài trắc nghiệm này?
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  Bạn sẽ không thể khôi phục lại bài trắc nghiệm này sau khi
+                  xóa.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel disabled={deleteQuizMutation.isPending}>
+                  Hủy
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleDelete}
+                  disabled={deleteQuizMutation.isPending}
+                  className="bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700"
+                >
+                  {deleteQuizMutation.isPending && (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  )}
+                  Xóa
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </Fragment>
+      );
+    },
   },
 ];

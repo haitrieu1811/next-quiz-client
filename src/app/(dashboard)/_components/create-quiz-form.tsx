@@ -170,7 +170,7 @@ const CreateQuizForm = ({ quizId }: CreateQuizFormProps) => {
         description: "Bạn đã cập nhật quiz thành công.",
       });
       queryClient.invalidateQueries({
-        queryKey: ["get-quizzes"],
+        queryKey: ["get-quizzes-dashboard"],
       });
     },
   });
