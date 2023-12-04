@@ -1,52 +1,28 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { CalendarIcon, Loader2, MoreVertical } from "lucide-react";
-import moment from "moment";
-import Link from "next/link";
-import { Fragment, useContext, useState } from "react";
+import { Bookmark, Heart } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+import { CalendarIcon } from "@radix-ui/react-icons";
 
-import quizApis from "@/apis/quiz.apis";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import fallbackThumbnail from "@/assets/images/quiz-example.jpg";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { QuizLevel } from "@/constants/enum";
+import PATH from "@/constants/path";
+import { generateNameId } from "@/lib/utils";
+import { QuizType } from "@/types/quiz.types";
+import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-import { QuizLevel } from "@/constants/enum";
-import PATH from "@/constants/path";
-import { AppContext } from "@/providers/app-provider";
-import { QuizType } from "@/types/quiz.types";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Badge } from "./ui/badge";
-import { Button } from "./ui/button";
-import { useToast } from "./ui/use-toast";
-import fallbackThumbnail from "@/assets/images/quiz-example.jpg";
-import { generateNameId } from "@/lib/utils";
 
 interface QuizProps {
   className?: string;
@@ -73,168 +49,87 @@ const levels = {
 };
 
 const Quiz = ({ className, quiz }: QuizProps) => {
-  const queryClient = useQueryClient();
-  const { user } = useContext(AppContext);
-  const { toast } = useToast();
-  const [alertDialogOpen, setAlertDialogOpen] = useState<boolean>(false);
-
-  // Mutation: Xóa quiz theo id
-  const deleteQuizMutation = useMutation({
-    mutationFn: quizApis.deleteQuiz,
-    onSuccess: () => {
-      toast({
-        title: "Xóa quiz thành công",
-        description: "Quiz đã được xóa khỏi hệ thống",
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["get-quizzes"],
-      });
-    },
-  });
-
-  // Handle: Xóa quiz
-  const handleDelete = () => {
-    deleteQuizMutation.mutate(quiz._id);
-  };
-
   return (
-    <Fragment>
-      <Card className={className}>
-        <CardHeader className="p-4">
+    <Card className={className}>
+      <CardHeader className="p-2">
+        <Link
+          href={`${PATH.PLAY}/${generateNameId({
+            name: quiz.name,
+            id: quiz._id,
+          })}`}
+        >
+          <Image
+            src={quiz.thumbnail ? quiz.thumbnail : fallbackThumbnail}
+            width="500"
+            height="500"
+            className="w-full h-40 object-cover rounded-md"
+            alt={quiz.name}
+          />
+        </Link>
+      </CardHeader>
+      <CardContent className="p-4 pt-2">
+        <CardTitle className="mb-2">
           <Link
             href={`${PATH.PLAY}/${generateNameId({
               name: quiz.name,
               id: quiz._id,
             })}`}
           >
-            <Image
-              src={quiz.thumbnail ? quiz.thumbnail : fallbackThumbnail}
-              width="500"
-              height="500"
-              className="w-full h-40 object-cover rounded-lg"
-              alt={quiz.name}
-            />
+            <span className="line-clamp-1">{quiz.name}</span>
           </Link>
-        </CardHeader>
-        <CardContent className="px-4">
-          <CardTitle className="mb-4">
-            <Link
-              href={`${PATH.PLAY}/${generateNameId({
-                name: quiz.name,
-                id: quiz._id,
-              })}`}
-            >
-              <span className="line-clamp-1">{quiz.name}</span>
-            </Link>
-          </CardTitle>
-          <Badge
-            className={`text-white ${levels[quiz.level as QuizLevel].color}`}
-          >
-            {levels[quiz.level as QuizLevel].text}
-          </Badge>
-        </CardContent>
-        <CardFooter className="flex justify-between items-center px-4">
-          <div>
-            <HoverCard>
-              <HoverCardTrigger asChild>
-                <Avatar className="w-8 h-8 select-none cursor-pointer">
-                  <AvatarImage src={quiz.author.avatar} />
-                  <AvatarFallback className="text-xs">
-                    {quiz.author.username[0].toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-              </HoverCardTrigger>
-              <HoverCardContent className="w-80">
-                <div className="flex space-x-4">
-                  <Link href={`${PATH.PROFILE}/${quiz.author.username}`}>
-                    <Avatar>
-                      <AvatarImage src={quiz.author.avatar} />
-                      <AvatarFallback>
-                        {quiz.author.username[0].toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                  </Link>
-                  <div className="space-y-1 flex-1">
-                    <Link href={`${PATH.PROFILE}/${quiz.author.username}`}>
-                      <h4 className="text-sm font-semibold hover:underline">
-                        @{quiz.author.username}
-                      </h4>
-                    </Link>
-                    <p className="text-sm">{quiz.author.bio}</p>
-                    <div className="flex items-center pt-2">
-                      <CalendarIcon className="mr-2 h-4 w-4 opacity-70" />{" "}
-                      <span className="text-xs text-muted-foreground">
-                        tham gia từ {moment(quiz.author.created_at).fromNow()}
-                      </span>
-                    </div>
-                  </div>
+        </CardTitle>
+        <HoverCard>
+          <HoverCardTrigger asChild>
+            <Button asChild variant="link" className="p-0">
+              <Link href={PATH.HOME} className="text-sm text-muted-foreground">
+                @rumbletran
+              </Link>
+            </Button>
+          </HoverCardTrigger>
+          <HoverCardContent className="w-80">
+            <div className="flex justify-between space-x-4">
+              <Avatar>
+                <AvatarImage src="https://github.com/vercel.png" />
+                <AvatarFallback>VC</AvatarFallback>
+              </Avatar>
+              <div className="space-y-1">
+                <h4 className="text-sm font-semibold">@nextjs</h4>
+                <p className="text-sm">
+                  The React Framework – created and maintained by @vercel.
+                </p>
+                <div className="flex items-center pt-2">
+                  <CalendarIcon className="mr-2 h-4 w-4 opacity-70" />{" "}
+                  <span className="text-xs text-muted-foreground">
+                    Joined December 2021
+                  </span>
                 </div>
-              </HoverCardContent>
-            </HoverCard>
+              </div>
+            </div>
+          </HoverCardContent>
+        </HoverCard>
+      </CardContent>
+      <CardFooter className="flex justify-between items-center px-4">
+        <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-1">
+            <Button variant="ghost" size="icon" className="w-8 h-8">
+              <Heart size={16} />
+            </Button>
+            <span className="text-sm text-foreground">28</span>
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                size="icon"
-                variant="secondary"
-                className="w-8 h-8 rounded-full"
-              >
-                <MoreVertical size={12} />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Tùy chọn</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Bắt đầu</DropdownMenuItem>
-              <DropdownMenuItem>Lưu</DropdownMenuItem>
-              <DropdownMenuItem>Thích</DropdownMenuItem>
-              <DropdownMenuItem>Xem trước</DropdownMenuItem>
-              {user?._id === quiz.author._id && (
-                <Fragment>
-                  <DropdownMenuItem asChild>
-                    <Link
-                      href={`${PATH.UPDATE_QUIZ}/${generateNameId({
-                        name: quiz.name,
-                        id: quiz._id,
-                      })}`}
-                    >
-                      Cập nhật
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setAlertDialogOpen(true)}>
-                    Xóa
-                  </DropdownMenuItem>
-                </Fragment>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </CardFooter>
-      </Card>
-      <AlertDialog open={alertDialogOpen} onOpenChange={setAlertDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Bạn có chắc muốn xóa quiz này?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Bạn sẽ không thể khôi phục lại quiz này sau khi xóa.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={deleteQuizMutation.isPending}>
-              Hủy
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDelete}
-              disabled={deleteQuizMutation.isPending}
-            >
-              {deleteQuizMutation.isPending && (
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              )}
-              Xóa
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </Fragment>
+          <div className="flex items-center space-x-1">
+            <Button variant="ghost" size="icon" className="w-8 h-8">
+              <Bookmark size={16} />
+            </Button>
+            <span className="text-sm text-foreground">31</span>
+          </div>
+        </div>
+        <Badge
+          className={`text-white ${levels[quiz.level as QuizLevel].color}`}
+        >
+          {levels[quiz.level as QuizLevel].text}
+        </Badge>
+      </CardFooter>
+    </Card>
   );
 };
 
